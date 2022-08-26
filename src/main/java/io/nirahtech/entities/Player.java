@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
+import java.awt.Point;
 
 import javax.imageio.ImageIO;
 
@@ -28,9 +29,9 @@ public class Player extends Entity implements GameProcess {
         super();
         this.gamePanel = gamePanel;
         this.keyboardHandler = keyboardHandler;
-
-        this.screenX = (this.gamePanel.getScreenWidth() / 2) - (this.gamePanel.getTileSize() / 2);
-        this.screenY = (this.gamePanel.getScreenHeight() / 2) - (this.gamePanel.getTileSize() / 2);
+        this.screenLocation = new Point();
+        this.screenLocation.x = (this.gamePanel.getScreenWidth() / 2) - (this.gamePanel.getTileSize() / 2);
+        this.screenLocation.y = (this.gamePanel.getScreenHeight() / 2) - (this.gamePanel.getTileSize() / 2);
 
         this.solidArea = new Rectangle();
         this.solidArea.x = 8;
@@ -43,11 +44,12 @@ public class Player extends Entity implements GameProcess {
     }
 
     public void setDefaultValues() {
-        this.worldX = this.gamePanel.getTileSize() * 320;
-        this.worldY = this.gamePanel.getTileSize() * 460;
+        this.mapLocation = new Point();
+        this.mapLocation.x = this.gamePanel.getTileSize() * 320;
+        this.mapLocation.y = this.gamePanel.getTileSize() * 460;
         this.speed = 10;
-        this.tileSizeWidth = 16;
-        this.tileSizeHeight = 16;
+        this.tileSizeWidth = this.gamePanel.getTileSize();
+        this.tileSizeHeight = this.gamePanel.getTileSize();
         this.direction = Direction.LEFT;
     }
 
@@ -92,14 +94,14 @@ public class Player extends Entity implements GameProcess {
         if (isKeyPressed) {
             if (this.collisionOn == false) {
                 if (this.direction == Direction.RIGHT) {
-                    this.worldX += this.speed;
+                    this.mapLocation.x += this.speed;
                 } else if (this.direction == Direction.LEFT) {
-                    this.worldX -= this.speed;
+                    this.mapLocation.x -= this.speed;
                 }
                 if (this.direction == Direction.DOWN) {
-                    this.worldY += this.speed;
+                    this.mapLocation.y += this.speed;
                 } else if (this.direction == Direction.UP) {
-                    this.worldY -= this.speed;
+                    this.mapLocation.y -= this.speed;
                 }
             }
         }
@@ -124,7 +126,7 @@ public class Player extends Entity implements GameProcess {
     @Override
     public void paintComponent(Graphics graphics2D) {
         final BufferedImage image = this.animations.get(this.currentAnimation)[this.spriteIndexToDisplay];
-        graphics2D.drawImage(image, this.screenX, this.screenY, this.tileSizeWidth, this.tileSizeHeight, null);
+        graphics2D.drawImage(image, this.screenLocation.x, this.screenLocation.y, this.tileSizeWidth, this.tileSizeHeight, null);
 
     }
 
