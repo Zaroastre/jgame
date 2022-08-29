@@ -2,6 +2,7 @@ package io.nirahtech.entities;
 
 import java.awt.image.BufferedImage;
 import java.awt.Rectangle;
+import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,10 +10,6 @@ import io.nirahtech.runtime.AnimationType;
 import io.nirahtech.runtime.Direction;
 
 public abstract class Entity {
-    protected int worldX;
-    protected int worldY;
-    protected int screenX;
-    protected int screenY;
     protected int speed;
     protected int tileSizeWidth;
     protected int tileSizeHeight;
@@ -24,6 +21,8 @@ public abstract class Entity {
     protected Map<AnimationType, BufferedImage[]> animations = new HashMap<>();
     protected Rectangle solidArea;
     protected boolean collisionOn = false;
+    protected Point mapLocation;
+    protected Point screenLocation;
 
     protected BufferedImage[] loadAnimation(final BufferedImage spritesSheet,
             final int rowIndex,
@@ -41,19 +40,19 @@ public abstract class Entity {
     }
 
     public int getScreenX() {
-        return screenX;
+        return this.screenLocation.x;
     }
 
     public int getScreenY() {
-        return screenY;
+        return this.screenLocation.y;
     }
 
     public int getWorldX() {
-        return worldX;
+        return this.mapLocation.x;
     }
 
     public int getWorldY() {
-        return worldY;
+        return this.mapLocation.y;
     }
 
     public Rectangle getSolidArea() {
@@ -70,5 +69,9 @@ public abstract class Entity {
 
     public void setCollisionOn(boolean collisionOn) {
         this.collisionOn = collisionOn;
+    }
+
+    public Point getMapLocation() {
+        return this.mapLocation;
     }
 }
