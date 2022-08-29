@@ -16,7 +16,7 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess {
     // Screen Settings
     private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private final int originalTileSize = 16;
-    private final int scale = 3;
+    private final int scale = 1;
     private final int tileSize = this.originalTileSize * this.scale;
     private final int maxScreenColumns = (int) screenSize.getWidth() / this.tileSize;
     private final int maxScreenRows = (int) screenSize.getHeight() / this.tileSize;;

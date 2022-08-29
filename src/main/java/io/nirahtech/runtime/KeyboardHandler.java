@@ -34,15 +34,19 @@ public final class KeyboardHandler implements KeyListener {
         // TODO Auto-generated method stub
         switch (event.getKeyCode()) {
             case KeyEvent.VK_Z:
+            case KeyEvent.VK_UP:
                 this.upPressed = true;
                 break;
             case KeyEvent.VK_S:
+            case KeyEvent.VK_DOWN:
                 this.downPressed = true;
                 break;
             case KeyEvent.VK_Q:
+            case KeyEvent.VK_LEFT:
                 this.leftPressed = true;
                 break;
             case KeyEvent.VK_D:
+            case KeyEvent.VK_RIGHT:
                 this.rightPressed = true;
                 break;
             default:
@@ -55,15 +59,19 @@ public final class KeyboardHandler implements KeyListener {
     public void keyReleased(KeyEvent event) {
         switch (event.getKeyCode()) {
             case KeyEvent.VK_Z:
+            case KeyEvent.VK_UP:
                 this.upPressed = false;
                 break;
             case KeyEvent.VK_S:
+            case KeyEvent.VK_DOWN:
                 this.downPressed = false;
                 break;
             case KeyEvent.VK_Q:
+            case KeyEvent.VK_LEFT:
                 this.leftPressed = false;
                 break;
             case KeyEvent.VK_D:
+            case KeyEvent.VK_RIGHT:
                 this.rightPressed = false;
                 break;
             default:
