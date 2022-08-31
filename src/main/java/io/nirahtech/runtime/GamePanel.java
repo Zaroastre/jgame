@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.awt.Rectangle;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
@@ -52,7 +53,7 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     private MouseWheelHandler mouseHandler;
     private TileManager tileManager;
     private CollisionChecker collisionChecker;
-    boolean isPlayState = true;
+    private GameStep gameStep = GameStep.IN_GAME;
 
     @Override
     public void zoom(int ratio) {
@@ -124,28 +125,54 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
 
     @Override
     public void update() {
-        if (this.isPlayState) {
-            this.player.update();
+        switch (this.gameStep) {
+            case IN_GAME:
+                this.player.update();
+                break;
+
+            default:
+                break;
         }
 
     }
 
     @Override
     public void paintComponent(final Graphics graphics) {
-        if (this.isPlayState) {
-            // TODO Auto-generated method stub
-            super.paintComponent(graphics);
-            final Graphics2D graphics2D = (Graphics2D) graphics;
-            tileManager.paintComponent(graphics2D);
-            for (SuperObject superObject : objects) {
-                if (superObject != null) {
-                    superObject.paintComponent(graphics2D);
+        final Graphics2D graphics2D = (Graphics2D) graphics;
+
+        switch (this.gameStep) {
+            case IN_GAME:
+                super.paintComponent(graphics);
+                tileManager.paintComponent(graphics2D);
+                for (SuperObject superObject : objects) {
+                    if (superObject != null) {
+                        superObject.paintComponent(graphics2D);
+                    }
                 }
-            }
-            this.player.paintComponent(graphics2D);
-            this.ui.paintComponent(graphics2D);
-            graphics2D.dispose();
+                this.player.paintComponent(graphics2D);
+                this.ui.paintComponent(graphics2D);
+                break;
+            case PAUSED:
+                String pauseText = "PAUSE";
+                Rectangle pausePanel = new Rectangle();
+                pausePanel.x = 0;
+                pausePanel.height = 200;
+                pausePanel.y = (this.screenHeight / 2) - (pausePanel.height / 2);
+                pausePanel.width = this.screenWidth;
+                graphics2D.setFont(UI.font);
+                graphics2D.setColor(Color.BLACK);
+                graphics2D.fillRect(pausePanel.x, pausePanel.y, pausePanel.width, pausePanel.height);
+                graphics2D.setColor(Color.RED);
+                graphics2D.drawRect(pausePanel.x, pausePanel.y, pausePanel.width, pausePanel.height);
+                graphics2D.setColor(Color.WHITE);
+                int length = (int) graphics2D.getFontMetrics().getStringBounds(pauseText, graphics2D).getWidth();
+                graphics2D.drawString(pauseText, (this.screenWidth / 2) - (length / 2), (this.screenHeight / 2));
+                break;
+            default:
+                break;
         }
+
+        graphics2D.dispose();
     }
 
     public int getTileSize() {
@@ -182,6 +209,13 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
 
     public int getScale() {
         return scale;
+    }
+
+    public GameStep getGameStep() {
+        return this.gameStep;
+    }
+    public void setGameStep(final GameStep gameStep) {
+        this.gameStep = gameStep;
     }
 
     @Override

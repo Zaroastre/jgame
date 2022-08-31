@@ -67,7 +67,11 @@ public final class KeyboardHandler implements KeyListener, Initializable {
                 this.rightPressed = true;
                 break;
             case KeyEvent.VK_P:
-                this.gamePanel.isPlayState = !this.gamePanel.isPlayState;
+                if (this.gamePanel.getGameStep() == GameStep.IN_GAME) {
+                    this.gamePanel.setGameStep(GameStep.PAUSED);
+                } else if (this.gamePanel.getGameStep() == GameStep.PAUSED) {
+                    this.gamePanel.setGameStep(GameStep.IN_GAME);
+                }
                 break;
             default:
                 break;

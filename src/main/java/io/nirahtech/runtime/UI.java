@@ -6,11 +6,11 @@ import java.awt.Graphics;
 
 public class UI implements GameProcess {
     private final GamePanel gamePanel;
-    private Font font;
+    public static Font font;
 
     public UI(final GamePanel gamePanel) {
         this.gamePanel = gamePanel;
-        this.font = new Font("Arial", Font.PLAIN, 20);
+        UI.font = new Font("Arial", Font.PLAIN, 20);
     }
 
     @Override
@@ -21,7 +21,7 @@ public class UI implements GameProcess {
 
     @Override
     public void paintComponent(final Graphics graphics) {
-        graphics.setFont(this.font);
+        graphics.setFont(UI.font);
         graphics.setColor(Color.RED);
         String playerWorldMapLocationText = String.format("Player Location (WorldMap): (x: %s, y: %s",
                 this.gamePanel.getPlayer().getMapPosition().x,
