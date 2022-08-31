@@ -1,20 +1,38 @@
 package io.nirahtech.runtime;
 
+import java.util.Optional;
+import java.util.ResourceBundle;
+
 import io.nirahtech.entities.Entity;
+import io.nirahtech.entities.Player;
+import io.nirahtech.entities.SuperObject;
 import io.nirahtech.tile.Tile;
 
-public class CollisionChecker {
-    private final GamePanel gamePanel;
+public class CollisionChecker implements Initializable {
+    private static CollisionChecker instance;
 
-    public CollisionChecker(final GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
+    public static final CollisionChecker getInstance() {
+        if (CollisionChecker.instance == null) {
+            CollisionChecker.instance = new CollisionChecker();
+        }
+        return CollisionChecker.instance;
     }
 
-    public void check(Entity entity) {
-        int entityLeftWorldX = entity.getWorldX() + entity.getSolidArea().x;
-        int entityRightWorldX = entity.getWorldX() + (entity.getSolidArea().x + entity.getSolidArea().width);
-        int entityTopWorldY = entity.getWorldY() + entity.getSolidArea().y;
-        int entityBottomWorldY = entity.getWorldY() + (entity.getSolidArea().y + entity.getSolidArea().height);
+    private GamePanel gamePanel;
+
+    private CollisionChecker() {
+
+    }
+
+    public void checkTile(final Entity entity) {
+
+        // Set rectangle perimeter for collision
+        final int entityLeftWorldX = entity.getMapPosition().x + entity.getSolidArea().x;
+        final int entityRightWorldX = entity.getMapPosition().x
+                + (entity.getSolidArea().x + entity.getSolidArea().width);
+        final int entityTopWorldY = entity.getMapPosition().y + entity.getSolidArea().y;
+        final int entityBottomWorldY = entity.getMapPosition().y
+                + (entity.getSolidArea().y + entity.getSolidArea().height);
 
         int entityLeftColumn = entityLeftWorldX / this.gamePanel.getTileSize();
         int entityRightColumn = entityRightWorldX / this.gamePanel.getTileSize();
@@ -26,22 +44,122 @@ public class CollisionChecker {
         switch (entity.getDirection()) {
             case UP:
                 entityTopRow = (entityTopWorldY - entity.getSpeed()) / this.gamePanel.getTileSize();
-                tileNum1 = this.gamePanel.getTileManager().getMap()[entityLeftColumn][entityTopRow];
-                tileNum2 = this.gamePanel.getTileManager().getMap()[entityRightColumn][entityTopRow];
+                if (this.gamePanel.getPlayer().getMapPosition().y > 0) {
+                    tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn, entityTopRow);
+                    tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn, entityTopRow);
+                } else {
+                    entity.setCollisionOn(true);
+                }
                 break;
             case RIGHT:
-
+                entityRightColumn = (entityRightWorldX + entity.getSpeed()) / this.gamePanel.getTileSize();
+                if (this.gamePanel.getPlayer().getMapPosition().x < (this.gamePanel.getTileManager().getWorldMap()
+                        .getOriginalWidth() * this.gamePanel.getTileSize())) {
+                    tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn, entityTopRow);
+                    tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn,
+                            entityBottomRow);
+                } else {
+                    entity.setCollisionOn(true);
+                }
                 break;
             case DOWN:
-
+                if (this.gamePanel.getPlayer().getMapPosition().y < (this.gamePanel.getTileManager().getWorldMap()
+                        .getOriginalHeight() * this.gamePanel.getTileSize())) {
+                    tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn, entityBottomRow);
+                    tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn,
+                            entityBottomRow);
+                } else {
+                    entity.setCollisionOn(true);
+                }
                 break;
             case LEFT:
-
+                entityLeftColumn = (entityRightWorldX - entity.getSpeed()) / this.gamePanel.getTileSize();
+                if (this.gamePanel.getPlayer().getMapPosition().x > 0) {
+                    tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn, entityTopRow);
+                    tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn,
+                            entityBottomRow);
+                } else {
+                    entity.setCollisionOn(true);
+                }
                 break;
         }
         if (tileNum1 != null && tileNum2 != null) {
-            System.out.println(String.format("Tile Top-Left: %s | Tile Top-Right: %s", tileNum1, tileNum2));
             entity.setCollisionOn(tileNum1.isCollision || tileNum2.isCollision);
         }
+    }
+
+    public Optional<Integer> checkSuperObject(final Entity entity) {
+        Optional<Integer> optionalIndex = Optional.empty();
+        for (int i = 0; i < this.gamePanel.objects.length; i++) {
+            SuperObject superObject = this.gamePanel.objects[i];
+            if (superObject != null) {
+                entity.getSolidArea().x = entity.getWorldX() + entity.getSolidArea().x;
+                entity.getSolidArea().y = entity.getWorldY() + entity.getSolidArea().y;
+                superObject.getSolidArea().x = superObject.worldX + superObject.getSolidArea().x;
+                superObject.getSolidArea().y = superObject.worldY + superObject.getSolidArea().y;
+
+                switch (entity.getDirection()) {
+                    case UP:
+                        entity.getSolidArea().y -= entity.getSpeed();
+                        if (entity.getSolidArea().intersects(superObject.getSolidArea())) {
+                            if (superObject.isCollision) {
+                                entity.setCollisionOn(true);
+                            }
+                            if (entity instanceof Player) {
+                                optionalIndex = Optional.of(i);
+                            }
+                        }
+                        break;
+                    case RIGHT:
+
+                        entity.getSolidArea().x += entity.getSpeed();
+                        if (entity.getSolidArea().intersects(superObject.getSolidArea())) {
+                            if (superObject.isCollision) {
+                                entity.setCollisionOn(true);
+                            }
+                            if (entity instanceof Player) {
+                                optionalIndex = Optional.of(i);
+                            }
+                        }
+                        break;
+                    case DOWN:
+
+                        entity.getSolidArea().y += entity.getSpeed();
+                        if (entity.getSolidArea().intersects(superObject.getSolidArea())) {
+                            if (superObject.isCollision) {
+                                entity.setCollisionOn(true);
+                            }
+                            if (entity instanceof Player) {
+                                optionalIndex = Optional.of(i);
+                            }
+                        }
+                        break;
+                    case LEFT:
+                        entity.getSolidArea().x -= entity.getSpeed();
+                        if (entity.getSolidArea().intersects(superObject.getSolidArea())) {
+                            if (superObject.isCollision) {
+                                entity.setCollisionOn(true);
+                            }
+                            if (entity instanceof Player) {
+                                optionalIndex = Optional.of(i);
+                            }
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                entity.getSolidArea().x = entity.solideAreaDefaultX;
+                entity.getSolidArea().y = entity.solideAreaDefaultY;
+                superObject.getSolidArea().x = superObject.solidAdreaDefaultX;
+                superObject.getSolidArea().y = superObject.solidAdreaDefaultY;
+            }
+        }
+        return optionalIndex;
+    }
+
+    @Override
+    public void initialize(ResourceBundle configuration) {
+        this.gamePanel = GamePanel.getInstance();
+
     }
 }

@@ -2,8 +2,21 @@ package io.nirahtech.runtime;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ResourceBundle;
 
-public final class KeyboardHandler implements KeyListener {
+public final class KeyboardHandler implements KeyListener, Initializable {
+    private static KeyboardHandler instance;
+
+    public static final KeyboardHandler getInstance() {
+        if (KeyboardHandler.instance == null) {
+            KeyboardHandler.instance = new KeyboardHandler();
+        }
+        return KeyboardHandler.instance;
+    }
+
+    private KeyboardHandler() {
+
+    }
 
     private boolean upPressed, downPressed, leftPressed, rightPressed = false;
 
@@ -77,5 +90,11 @@ public final class KeyboardHandler implements KeyListener {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void initialize(ResourceBundle configuration) {
+        // TODO Auto-generated method stub
+        
     }
 }

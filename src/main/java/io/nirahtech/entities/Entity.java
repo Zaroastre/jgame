@@ -9,7 +9,7 @@ import java.util.Map;
 import io.nirahtech.runtime.AnimationType;
 import io.nirahtech.runtime.Direction;
 
-public abstract class Entity {
+public abstract class Entity implements Moveable, GeoLocalizable {
     protected int speed;
     protected int tileSizeWidth;
     protected int tileSizeHeight;
@@ -20,6 +20,8 @@ public abstract class Entity {
     protected AnimationType currentAnimation = AnimationType.IDLE;
     protected Map<AnimationType, BufferedImage[]> animations = new HashMap<>();
     protected Rectangle solidArea;
+    public int solideAreaDefaultX;
+    public int solideAreaDefaultY;
     protected boolean collisionOn = false;
     protected Point mapLocation;
     protected Point screenLocation;
@@ -48,15 +50,19 @@ public abstract class Entity {
     }
 
     public int getWorldX() {
-        return this.mapLocation.x;
+        return this.getMapPosition().x;
     }
 
     public int getWorldY() {
-        return this.mapLocation.y;
+        return this.getMapPosition().y;
     }
 
     public Rectangle getSolidArea() {
         return solidArea;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 
     public Direction getDirection() {
@@ -67,11 +73,32 @@ public abstract class Entity {
         return speed;
     }
 
-    public void setCollisionOn(boolean collisionOn) {
+    public void setCollisionOn(final boolean collisionOn) {
         this.collisionOn = collisionOn;
     }
 
-    public Point getMapLocation() {
+    @Override
+    public void moveDown(final int distance) {
+        this.mapLocation.y += distance;
+    }
+
+    @Override
+    public void moveLeft(final int distance) {
+        this.mapLocation.x -= distance;
+    }
+
+    @Override
+    public void moveRight(final int distance) {
+        this.mapLocation.x += distance;
+    }
+
+    @Override
+    public void moveUp(final int distance) {
+        this.mapLocation.y -= distance;
+    }
+
+    @Override
+    public Point getMapPosition() {
         return this.mapLocation;
     }
 }
