@@ -2,6 +2,7 @@ package io.nirahtech.runtime;
 
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import io.nirahtech.entities.Entity;
 import io.nirahtech.entities.Player;
@@ -9,9 +10,11 @@ import io.nirahtech.entities.SuperObject;
 import io.nirahtech.tile.Tile;
 
 public class CollisionChecker implements Initializable {
+    private static final Logger LOGGER = Logger.getLogger(CollisionChecker.class.getSimpleName());
     private static CollisionChecker instance;
 
     public static final CollisionChecker getInstance() {
+        LOGGER.info("Calling unique instance of collision checker");
         if (CollisionChecker.instance == null) {
             CollisionChecker.instance = new CollisionChecker();
         }
@@ -159,7 +162,9 @@ public class CollisionChecker implements Initializable {
 
     @Override
     public void initialize(ResourceBundle configuration) {
+        LOGGER.info("Initializing collision checker instance...");
         this.gamePanel = GamePanel.getInstance();
+        LOGGER.info("Collision checker instance initialized.");
 
     }
 }

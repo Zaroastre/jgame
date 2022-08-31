@@ -3,11 +3,15 @@ package io.nirahtech.runtime;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public final class KeyboardHandler implements KeyListener, Initializable {
+    private static final Logger LOGGER = Logger.getLogger(KeyboardHandler.class.getSimpleName());
     private static KeyboardHandler instance;
+    private GamePanel gamePanel = null;
 
     public static final KeyboardHandler getInstance() {
+        LOGGER.info("Calling unique instance of keyboard handler");
         if (KeyboardHandler.instance == null) {
             KeyboardHandler.instance = new KeyboardHandler();
         }
@@ -38,13 +42,13 @@ public final class KeyboardHandler implements KeyListener, Initializable {
 
     @Override
     public void keyTyped(KeyEvent event) {
+
         // TODO Auto-generated method stub
 
     }
 
     @Override
     public void keyPressed(KeyEvent event) {
-        // TODO Auto-generated method stub
         switch (event.getKeyCode()) {
             case KeyEvent.VK_Z:
             case KeyEvent.VK_UP:
@@ -62,10 +66,12 @@ public final class KeyboardHandler implements KeyListener, Initializable {
             case KeyEvent.VK_RIGHT:
                 this.rightPressed = true;
                 break;
+            case KeyEvent.VK_P:
+                this.gamePanel.isPlayState = !this.gamePanel.isPlayState;
+                break;
             default:
                 break;
         }
-
     }
 
     @Override
@@ -94,7 +100,8 @@ public final class KeyboardHandler implements KeyListener, Initializable {
 
     @Override
     public void initialize(ResourceBundle configuration) {
-        // TODO Auto-generated method stub
-        
+        LOGGER.info("Initializing keyboard key handler instance...");
+        this.gamePanel = GamePanel.getInstance();
+        LOGGER.info("Keyboard key handler instance initialized.");
     }
 }

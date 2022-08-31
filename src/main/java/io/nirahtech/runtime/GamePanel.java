@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,9 +19,11 @@ import io.nirahtech.tile.TileManager;
 
 public final class GamePanel extends JPanel implements Runnable, GameProcess, Zoomable, Initializable {
 
+    private static final Logger LOGGER = Logger.getLogger(GamePanel.class.getSimpleName());
     private static GamePanel instance;
 
     public static final GamePanel getInstance() {
+        LOGGER.info("Calling unique instance of game panel");
         if (GamePanel.instance == null) {
             GamePanel.instance = new GamePanel();
         }
@@ -49,10 +52,7 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     private MouseWheelHandler mouseHandler;
     private TileManager tileManager;
     private CollisionChecker collisionChecker;
-
-    public void setup(ResourceBundle configuration) {
-
-    }
+    boolean isPlayState = true;
 
     @Override
     public void zoom(int ratio) {
@@ -61,7 +61,6 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
         this.updateTileSize();
         int newWorldWidth = this.tileSize * this.tileManager.getWorldMap().getOriginalWidth();
         double multiplier = (double) newWorldWidth / oldWorldWidth;
-        System.console().writer().println(newWorldWidth);
         player.setSpeed(newWorldWidth / 1920);
         player.getMapPosition().x = (int) (player.getWorldX() * multiplier);
         player.getMapPosition().y = (int) (player.getWorldY() * multiplier);
@@ -87,10 +86,11 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     }
 
     private GamePanel() {
-
+        LOGGER.info("Building game panel");
     }
 
     public void startGameThread() {
+        LOGGER.info("Game thread will start...");
         this.gameThread.start();
         this.sound.play();
         this.sound.loop();
@@ -103,6 +103,7 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     @Override
     public void run() {
 
+        LOGGER.info("Game thread is started");
         final double drawInterval = 1_000_000_000 / this.fps;
         double delta = 0;
         long lastTime = System.nanoTime();
@@ -123,24 +124,28 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
 
     @Override
     public void update() {
-        this.player.update();
+        if (this.isPlayState) {
+            this.player.update();
+        }
 
     }
 
     @Override
     public void paintComponent(final Graphics graphics) {
-        // TODO Auto-generated method stub
-        super.paintComponent(graphics);
-        final Graphics2D graphics2D = (Graphics2D) graphics;
-        tileManager.paintComponent(graphics2D);
-        for (SuperObject superObject : objects) {
-            if (superObject != null) {
-                superObject.paintComponent(graphics2D);
+        if (this.isPlayState) {
+            // TODO Auto-generated method stub
+            super.paintComponent(graphics);
+            final Graphics2D graphics2D = (Graphics2D) graphics;
+            tileManager.paintComponent(graphics2D);
+            for (SuperObject superObject : objects) {
+                if (superObject != null) {
+                    superObject.paintComponent(graphics2D);
+                }
             }
+            this.player.paintComponent(graphics2D);
+            this.ui.paintComponent(graphics2D);
+            graphics2D.dispose();
         }
-        this.player.paintComponent(graphics2D);
-        this.ui.paintComponent(graphics2D);
-        graphics2D.dispose();
     }
 
     public int getTileSize() {
@@ -175,17 +180,13 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
         return tileManager;
     }
 
-    public void setupGame() {
-        AssetSetter assetSetter = new AssetSetter(this);
-        assetSetter.setObject();
-    }
-
     public int getScale() {
         return scale;
     }
 
     @Override
     public void initialize(ResourceBundle configuration) {
+        LOGGER.info("Initializing game panel instance...");
         this.setPreferredSize(new Dimension(this.screenWidth, this.screenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
@@ -199,12 +200,12 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
         this.tileManager = TileManager.getInstance();
         this.collisionChecker = CollisionChecker.getInstance();
         this.player = Player.getInstance();
-        this.keyboardHandler.initialize(configuration);
-        this.mouseHandler.initialize(configuration);
+
         this.tileManager.initialize(configuration);
-        this.collisionChecker.initialize(configuration);
         this.player.initialize(configuration);
-        this.addKeyListener(this.keyboardHandler);
-        this.addMouseWheelListener(this.mouseHandler);
+        this.collisionChecker.initialize(configuration);
+        this.mouseHandler.initialize(configuration);
+        this.keyboardHandler.initialize(configuration);
+        LOGGER.info("Game panel instance initialized.");
     }
 }

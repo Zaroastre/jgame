@@ -3,6 +3,7 @@ package io.nirahtech.runtime;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -16,6 +17,7 @@ import io.nirahtech.tile.Tile;
 import io.nirahtech.tile.WaterTile;
 
 public class WorldMap {
+    private static final Logger LOGGER = Logger.getLogger(GamePanel.class.getSimpleName());
     private static BufferedImage grassImage;
     private static BufferedImage waterImage;
     private static BufferedImage hotStepImage;
@@ -25,6 +27,7 @@ public class WorldMap {
     private static BufferedImage earthImage;
 
     static {
+        LOGGER.info("Loading tiles images...");
         loadTileImage();
     }
 
@@ -61,6 +64,7 @@ public class WorldMap {
         }
 
         public final WorldMap build() {
+            LOGGER.info("Building the world map!");
             return new WorldMap(this);
         }
 
@@ -73,6 +77,7 @@ public class WorldMap {
     private final int tileSizeScale;
 
     private WorldMap(final WorldMapBuilder builder) {
+        LOGGER.info("Building the world map...");
         this.image = builder.image;
         this.originalTileSizeWidth = builder.originalTileSizeWidth;
         this.originalTileSizeHeight = builder.originalTileSizeHeight;

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -20,10 +21,12 @@ import io.nirahtech.runtime.Initializable;
 import io.nirahtech.runtime.KeyboardHandler;
 
 public class Player extends Entity implements GameProcess, Initializable {
+    private static final Logger LOGGER = Logger.getLogger(KeyboardHandler.class.getSimpleName());
 
     private static Player instance;
 
     public static final Player getInstance() {
+        LOGGER.info("Calling unique instance of player");
         if (Player.instance == null) {
             Player.instance = new Player();
         }
@@ -139,6 +142,7 @@ public class Player extends Entity implements GameProcess, Initializable {
 
     @Override
     public void initialize(ResourceBundle configuration) {
+        LOGGER.info("Initializing player instance...");
         this.gamePanel = GamePanel.getInstance();
         this.screenLocation = new Point();
         this.screenLocation.x = (this.gamePanel.getScreenWidth() / 2) - (this.gamePanel.getTileSize() / 2);
@@ -155,6 +159,7 @@ public class Player extends Entity implements GameProcess, Initializable {
         this.keyboardHandler = KeyboardHandler.getInstance();
         this.setDefaultValues();
         this.getImage();
+        LOGGER.info("Player instance initialized.");
     }
 
 }

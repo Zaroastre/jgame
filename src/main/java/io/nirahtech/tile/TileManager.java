@@ -5,19 +5,23 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+import io.nirahtech.entities.Player;
 import io.nirahtech.runtime.GamePanel;
 import io.nirahtech.runtime.GameProcess;
 import io.nirahtech.runtime.Initializable;
 import io.nirahtech.runtime.WorldMap;
 
 public final class TileManager implements GameProcess, Initializable {
+    private static final Logger LOGGER = Logger.getLogger(TileManager.class.getSimpleName());
 
     private static TileManager instance;
 
     public static final TileManager getInstance() {
+        // LOGGER.info("Calling unique instance of tiles manager");
         if (TileManager.instance == null) {
             TileManager.instance = new TileManager();
         }
@@ -28,7 +32,7 @@ public final class TileManager implements GameProcess, Initializable {
     private WorldMap map;
 
     private TileManager() {
-
+        LOGGER.info("Creating instance of tile manager.");
     }
 
     @Override
@@ -48,23 +52,43 @@ public final class TileManager implements GameProcess, Initializable {
                 // Real potential displayed world position if each pixel on screen.
                 int worldIndexX = screenIndexX * this.gamePanel.getTileSize();
                 int worldIndexY = screenIndexY * this.gamePanel.getTileSize();
+                Player player = this.gamePanel.getPlayer();
 
                 // Setup pixel location on the screen
-                int screenX = worldIndexX - this.gamePanel.getPlayer().getWorldX()
-                        + this.gamePanel.getPlayer().getScreenX();
-                int screenY = worldIndexY - this.gamePanel.getPlayer().getWorldY()
-                        + this.gamePanel.getPlayer().getScreenY();
+                int screenX = worldIndexX - player.getWorldX()
+                        + player.getScreenX();
+                int screenY = worldIndexY - player.getWorldY()
+                        + player.getScreenY();
 
-                if (worldIndexX + this.gamePanel.getTileSize() > this.gamePanel.getPlayer().getWorldX()
-                        - this.gamePanel.getPlayer().getScreenX() &&
-                        worldIndexX - this.gamePanel.getTileSize() < this.gamePanel.getPlayer().getWorldX()
-                                + this.gamePanel.getPlayer().getScreenX()
+                if (player.getScreenX() > player.getWorldX()) {
+                    screenX = worldIndexX;
+                }
+                if (player.getScreenY() > player.getWorldY()) {
+                    screenY = worldIndexY;
+                }
+                int rightOffset = this.gamePanel.getScreenWidth() - player.getScreenX();
+                if (rightOffset > getInstance().getWorldMap().getWidth()
+                        - player.getWorldX()) {
+                    screenX = this.gamePanel.getScreenWidth()
+                            - (getInstance().getWorldMap().getWidth() - worldIndexX);
+                }
+                int bottomOffset = this.gamePanel.getScreenHeight() - player.getScreenY();
+                if (bottomOffset > getInstance().getWorldMap().getHeight()
+                        - player.getWorldY()) {
+                    screenY = this.gamePanel.getScreenHeight()
+                            - (getInstance().getWorldMap().getHeight() - worldIndexY);
+                }
+
+                if (worldIndexX + this.gamePanel.getTileSize() > player.getWorldX()
+                        - player.getScreenX() &&
+                        worldIndexX - this.gamePanel.getTileSize() < player.getWorldX()
+                                + player.getScreenX()
                         &&
-                        worldIndexY + this.gamePanel.getTileSize() > this.gamePanel.getPlayer().getWorldY()
-                                - this.gamePanel.getPlayer().getScreenY()
+                        worldIndexY + this.gamePanel.getTileSize() > player.getWorldY()
+                                - player.getScreenY()
                         &&
-                        worldIndexY - this.gamePanel.getTileSize() < this.gamePanel.getPlayer().getWorldY()
-                                + this.gamePanel.getPlayer().getScreenY()) {
+                        worldIndexY - this.gamePanel.getTileSize() < player.getWorldY()
+                                + player.getScreenY()) {
 
                     graphics.drawImage(
                             tile.getImage(),
@@ -84,6 +108,7 @@ public final class TileManager implements GameProcess, Initializable {
 
     @Override
     public void initialize(ResourceBundle configuration) {
+        LOGGER.info("Initializing tile manager instance...");
         this.gamePanel = GamePanel.getInstance();
         BufferedImage worldMapImage = null;
         try (final InputStream inputStream = TileManager.class.getClassLoader().getResourceAsStream("worldmap.png")) {
@@ -96,5 +121,6 @@ public final class TileManager implements GameProcess, Initializable {
                 .originalTileSize(this.gamePanel.getOriginalTileSize())
                 .tileSizeScale(this.gamePanel.getScale())
                 .build();
+        LOGGER.info("Tile manager instance initialized.");
     }
 }
