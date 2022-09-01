@@ -52,7 +52,7 @@ public class JGame {
         window.setTitle(resourceBundle.getString("title"));
 
         LOGGER.info("Creating game panel...");
-        final GamePanel gamePanel = GamePanel.getInstance();
+        final GamePanel gamePanel = GamePanel.getInstance(window);
 
         LOGGER.info("Attaching event handler for keyboard...");
         window.addKeyListener(KeyboardHandler.getInstance());

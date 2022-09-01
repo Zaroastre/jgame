@@ -91,7 +91,7 @@ public final class Player extends Character implements GameProcess, Initializabl
         }
 
         super.setCollision(false);
-        Entity.GAME_PANEL.getCollisionChecker().checkTile(this);
+        // Entity.GAME_PANEL.getCollisionChecker().checkTile(this);
         Optional<Integer> indexOfSuperObjectTouched = this.gamePanel.getCollisionChecker().checkSuperObject(this);
         if (indexOfSuperObjectTouched.isPresent()) {
             dropSuperObject(indexOfSuperObjectTouched.get());

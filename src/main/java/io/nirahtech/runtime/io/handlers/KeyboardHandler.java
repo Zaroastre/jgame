@@ -77,6 +77,9 @@ public final class KeyboardHandler implements KeyListener, Initializable {
                     this.gamePanel.setGameStep(GameStep.IN_GAME);
                 }
                 break;
+            case KeyEvent.VK_M:
+                this.gamePanel.getSound().stop();
+                break;
             default:
                 break;
         }

@@ -7,9 +7,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+import java.awt.GraphicsEnvironment;
+import java.awt.GraphicsDevice;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -30,12 +34,19 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
 
     private static final Logger LOGGER = Logger.getLogger(GamePanel.class.getSimpleName());
     private static GamePanel instance;
+    private static JFrame window;
 
-    public static final GamePanel getInstance() {
+    public static final GamePanel getInstance(JFrame window) {
         LOGGER.info("Calling unique instance of game panel");
         if (GamePanel.instance == null) {
             GamePanel.instance = new GamePanel();
+            GamePanel.window = window;
         }
+        return GamePanel.instance;
+    }
+
+    public static final GamePanel getInstance() {
+        LOGGER.info("Calling unique instance of game panel");
         return GamePanel.instance;
     }
 
@@ -46,8 +57,8 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private final int maxScreenColumns = (int) screenSize.getWidth() / this.tileSize;
     private final int maxScreenRows = (int) screenSize.getHeight() / this.tileSize;
-    private final int screenWidth = this.tileSize * this.maxScreenColumns;
-    private final int screenHeight = this.tileSize * this.maxScreenRows;
+    private int screenWidth = this.tileSize * this.maxScreenColumns;
+    private int screenHeight = this.tileSize * this.maxScreenRows;
     private int fps = 60;
 
     // Engine Settings
@@ -62,6 +73,8 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     private TileManager tileManager;
     private CollisionChecker collisionChecker;
     private GameStep gameStep = GameStep.IN_GAME;
+    private BufferedImage tempScreen;
+    private Graphics2D canvas;
 
     @Override
     public void zoom(int ratio) {
@@ -74,6 +87,10 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
         player.getPositionOnTheWorldMap().x = (int) (player.getPositionOnTheWorldMap().x * multiplier);
         player.getPositionOnTheWorldMap().y = (int) (player.getPositionOnTheWorldMap().y * multiplier);
 
+    }
+
+    public Sound getSound() {
+        return sound;
     }
 
     @Override
@@ -100,6 +117,12 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     }
 
     public void startGameThread() {
+
+        GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice screen = graphicsEnvironment.getDefaultScreenDevice();
+        screen.setFullScreenWindow(GamePanel.window);
+        this.screenWidth = GamePanel.window.getWidth();
+        this.screenHeight = GamePanel.window.getHeight();
         LOGGER.info("Game thread will start...");
         this.gameThread.start();
         this.sound.play();
@@ -124,7 +147,9 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
 
             if (delta >= 1) {
                 this.update();
-                this.repaint();
+                // this.repaint();
+                this.createBufferedImageToDraw();
+                this.drawBufferedImageToScreen();
                 delta--;
             }
 
@@ -134,10 +159,61 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     @Override
     public void update() {
         switch (this.gameStep) {
+            case MAIN_MENU:
+                break;
             case IN_GAME:
                 this.player.update();
+                if (!this.sound.isPlaying() && this.sound.isPaused()) {
+                    this.sound.play();
+                }
                 break;
+            default:
+                break;
+        }
 
+    }
+
+    public void drawBufferedImageToScreen() {
+        Graphics graphics = this.getGraphics();
+        graphics.drawImage(this.tempScreen, 0, 0, this.screenWidth, this.screenHeight, null);
+        graphics.dispose();
+    }
+
+    public void createBufferedImageToDraw() {
+        switch (this.gameStep) {
+            case MAIN_MENU:
+                break;
+            case IN_GAME:
+                tileManager.paintComponent(this.canvas);
+                for (SuperObject superObject : objects) {
+                    if (superObject != null) {
+                        superObject.paintComponent(this.canvas);
+                    }
+                }
+                this.player.paintComponent(this.canvas);
+                this.ui.paintComponent(this.canvas);
+
+                break;
+            case PAUSED:
+                String pauseText = "PAUSE";
+                Rectangle pausePanel = new Rectangle();
+                pausePanel.x = 0;
+                pausePanel.height = 200;
+                pausePanel.y = (this.screenHeight / 2) - (pausePanel.height / 2);
+                pausePanel.width = this.screenWidth;
+
+                this.canvas.setFont(UI.font);
+                this.canvas.setColor(Color.BLACK);
+                this.canvas.fillRect(pausePanel.x, pausePanel.y, pausePanel.width, pausePanel.height);
+                this.canvas.setColor(Color.RED);
+                this.canvas.drawRect(pausePanel.x, pausePanel.y, pausePanel.width, pausePanel.height);
+                this.canvas.setColor(Color.WHITE);
+                int length = (int) this.canvas.getFontMetrics().getStringBounds(pauseText, this.canvas).getWidth();
+                this.canvas.drawString(pauseText, (this.screenWidth / 2) - (length / 2), (this.screenHeight / 2));
+                if (this.sound.isPlaying() && !this.sound.isPaused()) {
+                    this.sound.pause();
+                }
+                break;
             default:
                 break;
         }
@@ -148,9 +224,9 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     public void paintComponent(final Graphics graphics) {
         final Graphics2D graphics2D = (Graphics2D) graphics;
 
+        super.paintComponent(graphics);
         switch (this.gameStep) {
             case IN_GAME:
-                super.paintComponent(graphics);
                 tileManager.paintComponent(graphics2D);
                 for (SuperObject superObject : objects) {
                     if (superObject != null) {
@@ -159,9 +235,7 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
                 }
                 this.player.paintComponent(graphics2D);
                 this.ui.paintComponent(graphics2D);
-                if (!this.sound.isPlaying() && this.sound.isPaused()) {
-                    this.sound.play();
-                }
+
                 break;
             case PAUSED:
                 String pauseText = "PAUSE";
@@ -170,6 +244,7 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
                 pausePanel.height = 200;
                 pausePanel.y = (this.screenHeight / 2) - (pausePanel.height / 2);
                 pausePanel.width = this.screenWidth;
+
                 graphics2D.setFont(UI.font);
                 graphics2D.setColor(Color.BLACK);
                 graphics2D.fillRect(pausePanel.x, pausePanel.y, pausePanel.width, pausePanel.height);
@@ -242,6 +317,9 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.setFocusable(true);
+
+        this.tempScreen = new BufferedImage(this.screenWidth, this.screenHeight, BufferedImage.TYPE_INT_ARGB);
+        this.canvas = (Graphics2D) this.tempScreen.getGraphics();
 
         this.fps = Integer.parseInt(configuration.getString("fps"));
         this.originalTileSize = Integer.parseInt(configuration.getString("tileSize"));
