@@ -1,0 +1,93 @@
+@options
+@packages
+@argfile
+-encoding
+'UTF-8'
+-protected
+-source
+'17'
+-sourcepath
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2022. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'jgame 1.0-SNAPSHOT API'
+-use
+-version
+-windowtitle
+'jgame 1.0-SNAPSHOT API'
+io.nirahtech.entities.apis
+io.nirahtech.entities.artifacts
+io.nirahtech.entities.characters
+io.nirahtech.gui
+io.nirahtech
+io.nirahtech.runtime
+io.nirahtech.runtime.apis
+io.nirahtech.sound.apis
+io.nirahtech.sound
+io.nirahtech.tile
+io.nirahtech.utils
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/entities/apis/Collisionable.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/entities/apis/GeoLocalizable.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/entities/apis/Moveable.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/entities/artifacts/Key.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/entities/artifacts/SuperObject.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/entities/characters/Entity.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/entities/characters/NonPlayableCharacter.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/entities/characters/Player.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/gui/GamePanel.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/JGame.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/AnimationType.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/apis/GameProcess.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/BiomeType.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/Camera.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/CollisionChecker.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/Direction.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/GameStep.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/ImageScaler.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/Initializable.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/KeyboardHandler.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/MouseWheelHandler.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/UI.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/WorldMap.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/runtime/Zoomable.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/sound/apis/AudioPlayer.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/sound/Sound.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/tile/EarthTile.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/tile/ForestTile.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/tile/GrassTile.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/tile/HotStepTile.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/tile/IceTile.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/tile/SandTile.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/tile/Tile.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/tile/TileManager.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/tile/WallTile.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/tile/WaterTile.java'
+'C:/Users/nicolas.metivier/Documents/Programming/nirah-technology/jgame/src/main/java/io/nirahtech/utils/SpriteHelper.java'
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\src\main\java = 1661460027497
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\allclasses-index.html = 1662028031132
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\allpackages-index.html = 1662028031140
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\copy.svg = 1662028031312
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\element-list = 1662028029991
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\help-doc.html = 1662028031243
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\index-all.html = 1662028031229
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\index.html = 1662028031082
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\jquery-ui.overrides.css = 1662028031642
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\member-search-index.js = 1662028031165
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\module-search-index.js = 1662028031143
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\overview-summary.html = 1662028031234
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\overview-tree.html = 1662028031068
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\package-search-index.js = 1662028031151
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\script.js = 1662028031294
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\search.js = 1662028031319
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\serialized-form.html = 1662028030450
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\stylesheet.css = 1662028031262
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\tag-search-index.js = 1662028031170
+C:\Users\nicolas.metivier\Documents\Programming\nirah-technology\jgame\target\site\apidocs\type-search-index.js = 1662028031154

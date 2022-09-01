@@ -1,0 +1,11 @@
+io.nirahtech
+io.nirahtech.entities.apis
+io.nirahtech.entities.artifacts
+io.nirahtech.entities.characters
+io.nirahtech.gui
+io.nirahtech.runtime
+io.nirahtech.runtime.apis
+io.nirahtech.sound
+io.nirahtech.sound.apis
+io.nirahtech.tile
+io.nirahtech.utils

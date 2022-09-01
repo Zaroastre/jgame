@@ -1,28 +1,19 @@
 package io.nirahtech.entities.artifacts;
 
-import java.awt.image.BufferedImage;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 
-import io.nirahtech.entities.apis.GeoLocalizable;
+import io.nirahtech.entities.Entity;
 import io.nirahtech.entities.characters.Player;
-import io.nirahtech.gui.GamePanel;
 import io.nirahtech.runtime.apis.GameProcess;
 
 /**
  * Class that represents an object inside the game environment.
  */
-public abstract class SuperObject implements GameProcess, GeoLocalizable {
-    protected final GamePanel gamePanel = GamePanel.getInstance();
+public abstract class SuperObject extends Entity implements GameProcess {
     protected final BufferedImage image;
     protected final String name;
-    protected final Point solidAreaDefaultLocation;
-    protected final Point worldLocation;
-    protected final Point screenLocation;
-    protected final Rectangle solidArea;
-
-    protected boolean isCollision = false;
 
     /**
      * A Super Object that will be iniside the game environment and which the player
@@ -32,26 +23,9 @@ public abstract class SuperObject implements GameProcess, GeoLocalizable {
      * @param image The texture of the object.
      */
     protected SuperObject(final String name, final BufferedImage image) {
+        super(new Point(), new Point());
         this.name = name;
         this.image = image;
-        this.solidAreaDefaultLocation = new Point(0, 0);
-        this.solidArea = new Rectangle(
-                this.solidAreaDefaultLocation.x,
-                this.solidAreaDefaultLocation.y,
-                48,
-                48);
-        this.worldLocation = new Point();
-        this.screenLocation = new Point();
-    }
-
-    @Override
-    public Point getPositionOnTheMap() {
-        return this.worldLocation;
-    }
-
-    @Override
-    public Point getPositionOnTheScreen() {
-        return this.screenLocation;
     }
 
     @Override
@@ -67,28 +41,34 @@ public abstract class SuperObject implements GameProcess, GeoLocalizable {
      *         {@code false}.
      */
     private final boolean isThisInCameraFieldOfViewWithPlayer(final Player player) {
-        return (this.getPositionOnTheMap().x + this.gamePanel.getTileSize()) > (player.getWorldX()
-                - player.getPositionOnTheScreen().x)
+        return (this.getPositionOnTheWorldMap().x
+                + Entity.GAME_PANEL.getTileSize()) > (player.getPositionOnTheWorldMap().x
+                        - player.getPositionOnTheScreen().x)
                 &&
-                (this.getPositionOnTheMap().x - this.gamePanel.getTileSize()) < (player.getWorldX()
-                        + player.getPositionOnTheScreen().x)
+                (this.getPositionOnTheWorldMap().x
+                        - Entity.GAME_PANEL.getTileSize()) < (player.getPositionOnTheWorldMap().x
+                                + player.getPositionOnTheScreen().x)
                 &&
-                (this.getPositionOnTheMap().y + this.gamePanel.getTileSize()) > (player.getWorldY()
-                        - player.getPositionOnTheScreen().y)
+                (this.getPositionOnTheWorldMap().y
+                        + Entity.GAME_PANEL.getTileSize()) > (player.getPositionOnTheWorldMap().y
+                                - player.getPositionOnTheScreen().y)
                 &&
-                (this.getPositionOnTheMap().y - this.gamePanel.getTileSize()) < (player.getWorldY()
-                        + player.getPositionOnTheScreen().y);
+                (this.getPositionOnTheWorldMap().y
+                        - Entity.GAME_PANEL.getTileSize()) < (player.getPositionOnTheWorldMap().y
+                                + player.getPositionOnTheScreen().y);
     }
 
     @Override
     public void paintComponent(Graphics graphics) {
         // Retrieve player reference.
-        final Player player = this.gamePanel.getPlayer();
+        final Player player = Entity.GAME_PANEL.getPlayer();
 
         // Compute screen location (where the object's image will be draw) of this
         // object.
-        int screenX = this.getPositionOnTheMap().x - player.getWorldX() + player.getPositionOnTheScreen().x;
-        int screenY = this.getPositionOnTheMap().y - player.getWorldY() + player.getPositionOnTheScreen().y;
+        int screenX = this.getPositionOnTheWorldMap().x - player.getPositionOnTheWorldMap().x
+                + player.getPositionOnTheScreen().x;
+        int screenY = this.getPositionOnTheWorldMap().y - player.getPositionOnTheWorldMap().y
+                + player.getPositionOnTheScreen().y;
 
         // If the object's map location is in the field of view of the camera,
         // draw image.
@@ -97,15 +77,11 @@ public abstract class SuperObject implements GameProcess, GeoLocalizable {
                     this.image,
                     screenX,
                     screenY,
-                    this.gamePanel.getTileSize(),
-                    this.gamePanel.getTileSize(),
+                    Entity.GAME_PANEL.getTileSize(),
+                    Entity.GAME_PANEL.getTileSize(),
                     null);
         }
 
-    }
-
-    public Rectangle getSolidArea() {
-        return solidArea;
     }
 
 }

@@ -2,8 +2,6 @@ package io.nirahtech.sound;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -19,13 +17,10 @@ public final class Sound implements AudioPlayer {
     private long resumeTime = 0;
     private boolean isPaused = false;
 
-    public Sound(final Path audioFileURL) {
-        if (Files.exists(audioFileURL) && Files.isRegularFile(audioFileURL)) {
-            final URL url = Sound.class.getClassLoader().getResource(audioFileURL.toString());
-            this.audioFileURL = url;
-            this.loadAudioFile();
-        }
-
+    public Sound(final String audioFileURL) {
+        final URL url = Sound.class.getClassLoader().getResource(audioFileURL.toString());
+        this.audioFileURL = url;
+        this.loadAudioFile();
     }
 
     private final void loadAudioFile() {

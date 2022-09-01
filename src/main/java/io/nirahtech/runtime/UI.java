@@ -27,11 +27,11 @@ public class UI implements GameProcess {
         graphics.setFont(UI.font);
         graphics.setColor(Color.RED);
         String playerWorldMapLocationText = String.format("Player Location (WorldMap): (x: %s, y: %s",
-                this.gamePanel.getPlayer().getPositionOnTheMap().x,
-                this.gamePanel.getPlayer().getPositionOnTheMap().y);
+                this.gamePanel.getPlayer().getPositionOnTheWorldMap().x,
+                this.gamePanel.getPlayer().getPositionOnTheWorldMap().y);
         String playerScreenLocationText = String.format("Player Location (Screen): (x: %s, y: %s)",
-                this.gamePanel.getPlayer().getScreenX(),
-                this.gamePanel.getPlayer().getScreenY());
+                this.gamePanel.getPlayer().getPositionOnTheScreen().x,
+                this.gamePanel.getPlayer().getPositionOnTheScreen().y);
         String mapDimensions = String.format("Map: (x: %s, y: %s) - With tile size (): (x: %s, y: %s)",
                 this.gamePanel.getTileManager().getWorldMap().getOriginalWidth(),
                 this.gamePanel.getTileManager().getWorldMap().getOriginalHeight(),

@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+import io.nirahtech.entities.Entity;
 import io.nirahtech.runtime.AnimationType;
 import io.nirahtech.runtime.Direction;
 import io.nirahtech.runtime.Initializable;
@@ -19,7 +20,7 @@ import io.nirahtech.runtime.KeyboardHandler;
 import io.nirahtech.runtime.apis.GameProcess;
 import io.nirahtech.utils.SpriteHelper;
 
-public class Player extends Entity implements GameProcess, Initializable {
+public final class Player extends Character implements GameProcess, Initializable {
     private static final Logger LOGGER = Logger.getLogger(KeyboardHandler.class.getSimpleName());
     private static Player instance;
 
@@ -38,8 +39,8 @@ public class Player extends Entity implements GameProcess, Initializable {
     }
 
     private void setupWithDefaultValues() {
-        this.mapLocation.x = this.gamePanel.getTileSize() * 417;
-        this.mapLocation.y = this.gamePanel.getTileSize() * 670;
+        super.getPositionOnTheWorldMap().x = this.gamePanel.getTileSize() * 417;
+        super.getPositionOnTheWorldMap().y = this.gamePanel.getTileSize() * 670;
         this.speed = this.gamePanel.getTileManager().getWorldMap().getWidth() / 1920;
         this.tileSizeWidth = this.gamePanel.getTileSize();
         this.tileSizeHeight = this.gamePanel.getTileSize();
@@ -89,13 +90,13 @@ public class Player extends Entity implements GameProcess, Initializable {
             isKeyPressed = true;
         }
 
-        this.collisionOn = false;
-        this.gamePanel.getCollisionChecker().checkTile(this);
+        super.setCollision(false);
+        Entity.GAME_PANEL.getCollisionChecker().checkTile(this);
         Optional<Integer> indexOfSuperObjectTouched = this.gamePanel.getCollisionChecker().checkSuperObject(this);
         if (indexOfSuperObjectTouched.isPresent()) {
             dropSuperObject(indexOfSuperObjectTouched.get());
         }
-        if (isKeyPressed && !this.collisionOn) {
+        if (isKeyPressed && !super.isCollision()) {
             if (this.direction == Direction.RIGHT) {
                 this.moveRight(this.speed);
             } else if (this.direction == Direction.LEFT) {
@@ -126,7 +127,8 @@ public class Player extends Entity implements GameProcess, Initializable {
     @Override
     public void paintComponent(Graphics graphics2D) {
         final BufferedImage image = this.animations.get(this.currentAnimation)[this.spriteIndexToDisplay];
-        graphics2D.drawImage(image, this.screenLocation.x, this.screenLocation.y, this.tileSizeWidth,
+        graphics2D.drawImage(image, this.getPositionOnTheScreen().x, this.getPositionOnTheScreen().y,
+                this.tileSizeWidth,
                 this.tileSizeHeight, null);
         graphics2D.setColor(Color.RED);
         graphics2D.drawRect(this.solidArea.x, this.solidArea.y, this.solidArea.width, this.solidArea.height);
@@ -135,15 +137,15 @@ public class Player extends Entity implements GameProcess, Initializable {
     @Override
     public void initialize(ResourceBundle configuration) {
         LOGGER.info("Initializing player instance...");
-        this.screenLocation.x = (this.gamePanel.getScreenWidth() / 2) - (this.gamePanel.getTileSize() / 2);
-        this.screenLocation.y = (this.gamePanel.getScreenHeight() / 2) - (this.gamePanel.getTileSize() / 2);
+        this.getPositionOnTheScreen().x = (this.gamePanel.getScreenWidth() / 2) - (this.gamePanel.getTileSize() / 2);
+        this.getPositionOnTheScreen().y = (this.gamePanel.getScreenHeight() / 2) - (this.gamePanel.getTileSize() / 2);
 
-        this.solidArea.x = this.screenLocation.x + 4;
-        this.solidArea.y = this.screenLocation.y + 8;
+        this.solidArea.x = this.getPositionOnTheScreen().x + 4;
+        this.solidArea.y = this.getPositionOnTheScreen().y + 8;
         this.solidArea.width = 8;
         this.solidArea.height = 8;
-        this.solideAreaDefaultX = this.solidArea.x;
-        this.solideAreaDefaultY = this.solidArea.y;
+        this.solidAreaDefaultLocation.x = this.solidArea.x;
+        this.solidAreaDefaultLocation.y = this.solidArea.y;
 
         this.keyboardHandler = KeyboardHandler.getInstance();
         this.setupWithDefaultValues();
