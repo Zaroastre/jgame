@@ -3,7 +3,11 @@ package io.nirahtech.runtime;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
 
-public class ImageScaler {
+public final class ImageScaler {
+
+    private ImageScaler() {
+    }
+
     public static BufferedImage scaleImage(BufferedImage originalImage, int width, int height) {
         BufferedImage scaledImage = new BufferedImage(width, height, originalImage.getType());
         Graphics2D graphics = scaledImage.createGraphics();

@@ -19,6 +19,7 @@ import io.nirahtech.tile.WaterTile;
 
 public class WorldMap {
     private static final Logger LOGGER = Logger.getLogger(GamePanel.class.getSimpleName());
+
     private static BufferedImage grassImage;
     private static BufferedImage waterImage;
     private static BufferedImage hotStepImage;

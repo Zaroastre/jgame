@@ -9,6 +9,7 @@ import io.nirahtech.entities.characters.Character;
 import io.nirahtech.entities.characters.Player;
 import io.nirahtech.gui.GamePanel;
 import io.nirahtech.tile.Tile;
+import io.nirahtech.tile.TileManager;
 
 public class CollisionChecker implements Initializable {
     private static final Logger LOGGER = Logger.getLogger(CollisionChecker.class.getSimpleName());
@@ -44,13 +45,15 @@ public class CollisionChecker implements Initializable {
         int entityBottomRow = entityBottomWorldY / this.gamePanel.getTileSize();
 
         Tile tileNum1 = null, tileNum2 = null;
+        final WorldMap worldMap = TileManager.getInstance().getWorldMap();
 
         switch (entity.getDirection()) {
             case UP:
+                // We are going to the top, we check 2 tiles in front of us.
                 entityTopRow = (entityTopWorldY - entity.getSpeed()) / this.gamePanel.getTileSize();
                 if (this.gamePanel.getPlayer().getPositionOnTheWorldMap().y > 0) {
-                    tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn, entityTopRow);
-                    tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn, entityTopRow);
+                    tileNum1 = worldMap.getTile(entityLeftColumn, entityTopRow);
+                    tileNum2 = worldMap.getTile(entityRightColumn, entityTopRow);
                 } else {
                     entity.setCollision(true);
                 }
@@ -58,10 +61,10 @@ public class CollisionChecker implements Initializable {
             case RIGHT:
                 entityRightColumn = (entityRightWorldX + entity.getSpeed()) / this.gamePanel.getTileSize();
                 if (this.gamePanel.getPlayer()
-                        .getPositionOnTheWorldMap().x < (this.gamePanel.getTileManager().getWorldMap()
+                        .getPositionOnTheWorldMap().x < (worldMap
                                 .getOriginalWidth() * this.gamePanel.getTileSize())) {
-                    tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn, entityTopRow);
-                    tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn,
+                    tileNum1 = worldMap.getTile(entityRightColumn, entityTopRow);
+                    tileNum2 = worldMap.getTile(entityRightColumn,
                             entityBottomRow);
                 } else {
                     entity.setCollision(true);
@@ -69,10 +72,10 @@ public class CollisionChecker implements Initializable {
                 break;
             case DOWN:
                 if (this.gamePanel.getPlayer()
-                        .getPositionOnTheWorldMap().y < (this.gamePanel.getTileManager().getWorldMap()
+                        .getPositionOnTheWorldMap().y < (worldMap
                                 .getOriginalHeight() * this.gamePanel.getTileSize())) {
-                    tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn, entityBottomRow);
-                    tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn,
+                    tileNum1 = worldMap.getTile(entityLeftColumn, entityBottomRow);
+                    tileNum2 = worldMap.getTile(entityRightColumn,
                             entityBottomRow);
                 } else {
                     entity.setCollision(true);
@@ -81,8 +84,8 @@ public class CollisionChecker implements Initializable {
             case LEFT:
                 entityLeftColumn = (entityRightWorldX - entity.getSpeed()) / this.gamePanel.getTileSize();
                 if (this.gamePanel.getPlayer().getPositionOnTheWorldMap().x > 0) {
-                    tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn, entityTopRow);
-                    tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn,
+                    tileNum1 = worldMap.getTile(entityLeftColumn, entityTopRow);
+                    tileNum2 = worldMap.getTile(entityLeftColumn,
                             entityBottomRow);
                 } else {
                     entity.setCollision(true);

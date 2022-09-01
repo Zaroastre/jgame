@@ -6,9 +6,9 @@ import java.util.EnumMap;
 
 import io.nirahtech.entities.Entity;
 import io.nirahtech.entities.apis.Moveable;
+import io.nirahtech.enumerations.AnimationType;
+import io.nirahtech.enumerations.Direction;
 import io.nirahtech.gui.GamePanel;
-import io.nirahtech.runtime.AnimationType;
-import io.nirahtech.runtime.Direction;
 
 public abstract class Character extends Entity implements Moveable {
     protected final GamePanel gamePanel = GamePanel.getInstance();

@@ -1,4 +1,4 @@
-package io.nirahtech.runtime;
+package io.nirahtech.runtime.io.handlers;
 
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -6,6 +6,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import io.nirahtech.gui.GamePanel;
+import io.nirahtech.runtime.Initializable;
+import io.nirahtech.runtime.apis.Zoomable;
 
 public class MouseWheelHandler implements MouseWheelListener, Initializable {
 

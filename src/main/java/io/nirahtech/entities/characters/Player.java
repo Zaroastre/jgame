@@ -13,11 +13,11 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 import io.nirahtech.entities.Entity;
-import io.nirahtech.runtime.AnimationType;
-import io.nirahtech.runtime.Direction;
+import io.nirahtech.enumerations.AnimationType;
+import io.nirahtech.enumerations.Direction;
 import io.nirahtech.runtime.Initializable;
-import io.nirahtech.runtime.KeyboardHandler;
 import io.nirahtech.runtime.apis.GameProcess;
+import io.nirahtech.runtime.io.handlers.KeyboardHandler;
 import io.nirahtech.utils.SpriteHelper;
 
 public final class Player extends Character implements GameProcess, Initializable {

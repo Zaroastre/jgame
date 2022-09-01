@@ -1,4 +1,4 @@
-package io.nirahtech.runtime;
+package io.nirahtech.enumerations;
 
 public enum BiomeType {
     // https://outforia.com/types-of-biomes/

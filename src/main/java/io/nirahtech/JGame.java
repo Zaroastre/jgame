@@ -1,5 +1,7 @@
 package io.nirahtech;
 
+import java.awt.Cursor;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
@@ -10,8 +12,8 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 import io.nirahtech.gui.GamePanel;
-import io.nirahtech.runtime.KeyboardHandler;
-import io.nirahtech.runtime.MouseWheelHandler;
+import io.nirahtech.runtime.io.handlers.KeyboardHandler;
+import io.nirahtech.runtime.io.handlers.MouseWheelHandler;
 
 /**
  * Hello world!
@@ -40,6 +42,7 @@ public class JGame {
 
         LOGGER.info("Creating window...");
         final JFrame window = new JFrame();
+        window.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setExtendedState(JFrame.MAXIMIZED_BOTH);
         window.setResizable(false);
@@ -61,6 +64,7 @@ public class JGame {
         window.add(gamePanel);
         window.pack();
         LOGGER.info("Starting video game engine...");
+        window.setCursor(Cursor.getDefaultCursor());
         gamePanel.startGameThread();
     }
 }

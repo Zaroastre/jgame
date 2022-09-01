@@ -1,4 +1,4 @@
-package io.nirahtech.runtime;
+package io.nirahtech.enumerations;
 
 public enum Direction {
     UP,

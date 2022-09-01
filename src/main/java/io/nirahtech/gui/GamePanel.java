@@ -15,14 +15,14 @@ import javax.swing.JPanel;
 
 import io.nirahtech.entities.artifacts.SuperObject;
 import io.nirahtech.entities.characters.Player;
+import io.nirahtech.enumerations.GameStep;
 import io.nirahtech.runtime.CollisionChecker;
-import io.nirahtech.runtime.GameStep;
 import io.nirahtech.runtime.Initializable;
-import io.nirahtech.runtime.KeyboardHandler;
-import io.nirahtech.runtime.MouseWheelHandler;
 import io.nirahtech.runtime.UI;
-import io.nirahtech.runtime.Zoomable;
 import io.nirahtech.runtime.apis.GameProcess;
+import io.nirahtech.runtime.apis.Zoomable;
+import io.nirahtech.runtime.io.handlers.KeyboardHandler;
+import io.nirahtech.runtime.io.handlers.MouseWheelHandler;
 import io.nirahtech.sound.Sound;
 import io.nirahtech.tile.TileManager;
 
@@ -40,17 +40,17 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     }
 
     // Screen Settings
-    private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private final int originalTileSize = 16;
+    private int originalTileSize = 16;
     private int scale = 3;
     private int tileSize = this.originalTileSize * this.scale;
+    private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private final int maxScreenColumns = (int) screenSize.getWidth() / this.tileSize;
-    private final int maxScreenRows = (int) screenSize.getHeight() / this.tileSize;;
+    private final int maxScreenRows = (int) screenSize.getHeight() / this.tileSize;
     private final int screenWidth = this.tileSize * this.maxScreenColumns;
     private final int screenHeight = this.tileSize * this.maxScreenRows;
+    private int fps = 60;
 
     // Engine Settings
-    private final int fps = 60;
     private Player player;
     private final Thread gameThread = new Thread(this);
     private final UI ui = new UI(this);
@@ -112,7 +112,6 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
 
     @Override
     public void run() {
-
         LOGGER.info("Game thread is started");
         final double drawInterval = 1_000_000_000 / this.fps;
         double delta = 0;
@@ -234,6 +233,8 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
         this.gameStep = gameStep;
     }
 
+    // getW
+
     @Override
     public void initialize(ResourceBundle configuration) {
         LOGGER.info("Initializing game panel instance...");
@@ -241,6 +242,12 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
         this.setFocusable(true);
+
+        this.fps = Integer.parseInt(configuration.getString("fps"));
+        this.originalTileSize = Integer.parseInt(configuration.getString("tileSize"));
+        this.scale = Integer.parseInt(configuration.getString("defaultScale"));
+        this.updateTileSize();
+
         this.locationLabel.setLayout(new FlowLayout());
         this.locationLabel.setLocation(100, 100);
         this.add(this.locationLabel);
@@ -257,5 +264,6 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
         this.mouseHandler.initialize(configuration);
         this.keyboardHandler.initialize(configuration);
         LOGGER.info("Game panel instance initialized.");
+
     }
 }
