@@ -1,4 +1,4 @@
-package io.nirahtech.runtime;
+package io.nirahtech.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Toolkit;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.awt.Rectangle;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -13,9 +15,20 @@ import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import io.nirahtech.entities.Player;
-import io.nirahtech.entities.SuperObject;
+import io.nirahtech.entities.artifacts.SuperObject;
+import io.nirahtech.entities.characters.Player;
+
+import io.nirahtech.runtime.CollisionChecker;
+import io.nirahtech.runtime.GameStep;
+import io.nirahtech.runtime.Initializable;
+import io.nirahtech.runtime.KeyboardHandler;
+import io.nirahtech.runtime.MouseWheelHandler;
+import io.nirahtech.runtime.UI;
+import io.nirahtech.runtime.Zoomable;
+import io.nirahtech.runtime.apis.GameProcess;
+
 import io.nirahtech.sound.Sound;
+
 import io.nirahtech.tile.TileManager;
 
 public final class GamePanel extends JPanel implements Runnable, GameProcess, Zoomable, Initializable {
@@ -46,7 +59,7 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     private Player player;
     private final Thread gameThread = new Thread(this);
     private final UI ui = new UI(this);
-    private final Sound sound = new Sound();
+    private final Sound sound;
     public SuperObject[] objects = new SuperObject[10];
     private JLabel locationLabel = new JLabel();
     private KeyboardHandler keyboardHandler;
@@ -62,9 +75,9 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
         this.updateTileSize();
         int newWorldWidth = this.tileSize * this.tileManager.getWorldMap().getOriginalWidth();
         double multiplier = (double) newWorldWidth / oldWorldWidth;
-        player.setSpeed(newWorldWidth / 1920);
-        player.getMapPosition().x = (int) (player.getWorldX() * multiplier);
-        player.getMapPosition().y = (int) (player.getWorldY() * multiplier);
+        player.setSpeed(newWorldWidth / (int) screenSize.getWidth());
+        player.getPositionOnTheMap().x = (int) (player.getWorldX() * multiplier);
+        player.getPositionOnTheMap().y = (int) (player.getWorldY() * multiplier);
 
     }
 
@@ -88,6 +101,13 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
 
     private GamePanel() {
         LOGGER.info("Building game panel");
+        try {
+            this.sound = new Sound(Paths.get(GamePanel.class.getClassLoader().getResource("earth.png").toURI()));
+        } catch (URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            this.sound = null;
+        }
     }
 
     public void startGameThread() {
@@ -214,6 +234,7 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     public GameStep getGameStep() {
         return this.gameStep;
     }
+
     public void setGameStep(final GameStep gameStep) {
         this.gameStep = gameStep;
     }

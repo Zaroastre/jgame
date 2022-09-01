@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 
-import io.nirahtech.runtime.GamePanel;
+import io.nirahtech.gui.GamePanel;
 import io.nirahtech.runtime.KeyboardHandler;
 import io.nirahtech.runtime.MouseWheelHandler;
 

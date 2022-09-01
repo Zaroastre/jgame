@@ -9,11 +9,11 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-import io.nirahtech.entities.Player;
-import io.nirahtech.runtime.GamePanel;
-import io.nirahtech.runtime.GameProcess;
+import io.nirahtech.entities.characters.Player;
+import io.nirahtech.gui.GamePanel;
 import io.nirahtech.runtime.Initializable;
 import io.nirahtech.runtime.WorldMap;
+import io.nirahtech.runtime.apis.GameProcess;
 
 public final class TileManager implements GameProcess, Initializable {
     private static final Logger LOGGER = Logger.getLogger(TileManager.class.getSimpleName());

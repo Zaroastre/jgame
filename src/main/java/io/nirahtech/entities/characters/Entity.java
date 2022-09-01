@@ -1,15 +1,18 @@
-package io.nirahtech.entities;
+package io.nirahtech.entities.characters;
 
-import java.awt.image.BufferedImage;
-import java.awt.Rectangle;
 import java.awt.Point;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.util.EnumMap;
 
+import io.nirahtech.entities.apis.GeoLocalizable;
+import io.nirahtech.entities.apis.Moveable;
+import io.nirahtech.gui.GamePanel;
 import io.nirahtech.runtime.AnimationType;
 import io.nirahtech.runtime.Direction;
 
 public abstract class Entity implements Moveable, GeoLocalizable {
+    protected final GamePanel gamePanel = GamePanel.getInstance();
     protected int speed;
     protected int tileSizeWidth;
     protected int tileSizeHeight;
@@ -18,43 +21,42 @@ public abstract class Entity implements Moveable, GeoLocalizable {
     protected int spriteIndexToDisplay = 0;
     protected int spriteCounter = 0;
     protected AnimationType currentAnimation = AnimationType.IDLE;
-    protected Map<AnimationType, BufferedImage[]> animations = new HashMap<>();
-    protected Rectangle solidArea;
-    public int solideAreaDefaultX;
-    public int solideAreaDefaultY;
+    protected final EnumMap<AnimationType, BufferedImage[]> animations = new EnumMap<>(AnimationType.class);
+    protected int solideAreaDefaultX;
+    protected int solideAreaDefaultY;
     protected boolean collisionOn = false;
-    protected Point mapLocation;
-    protected Point screenLocation;
+    protected final Rectangle solidArea;
+    protected final Point mapLocation;
+    protected final Point screenLocation;
 
-    protected BufferedImage[] loadAnimation(final BufferedImage spritesSheet,
-            final int rowIndex,
-            final int spriteWidth, final int spriteHeight, final int totalSprites) {
-        BufferedImage[] sprites = new BufferedImage[totalSprites];
-        for (int columnIndex = 0; columnIndex < totalSprites; columnIndex++) {
-            // sprites[(rowIndex * totalSprites) + columnIndex] = spritesSheet.getSubimage(
-            sprites[columnIndex] = spritesSheet.getSubimage(
-                    columnIndex * spriteWidth,
-                    rowIndex * spriteHeight,
-                    spriteWidth,
-                    spriteHeight);
-        }
-        return sprites;
+    protected Entity(Point mapLocation, Point screenLocation) {
+        this.mapLocation = mapLocation;
+        this.screenLocation = screenLocation;
+        this.solidArea = new Rectangle(
+                this.screenLocation.x,
+                this.screenLocation.y,
+                this.gamePanel.getTileSize(),
+                this.gamePanel.getTileSize());
     }
 
-    public int getScreenX() {
-        return this.screenLocation.x;
+    
+
+    @Override
+    public Point getPositionOnTheScreen() {
+        return this.screenLocation;
     }
 
-    public int getScreenY() {
-        return this.screenLocation.y;
+    @Override
+    public Point getPositionOnTheMap() {
+        return this.mapLocation;
     }
 
     public int getWorldX() {
-        return this.getMapPosition().x;
+        return this.getPositionOnTheMap().x;
     }
 
     public int getWorldY() {
-        return this.getMapPosition().y;
+        return this.getPositionOnTheMap().y;
     }
 
     public Rectangle getSolidArea() {
@@ -97,8 +99,4 @@ public abstract class Entity implements Moveable, GeoLocalizable {
         this.mapLocation.y -= distance;
     }
 
-    @Override
-    public Point getMapPosition() {
-        return this.mapLocation;
-    }
 }

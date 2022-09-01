@@ -4,9 +4,10 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-import io.nirahtech.entities.Entity;
-import io.nirahtech.entities.Player;
-import io.nirahtech.entities.SuperObject;
+import io.nirahtech.entities.artifacts.SuperObject;
+import io.nirahtech.entities.characters.Entity;
+import io.nirahtech.entities.characters.Player;
+import io.nirahtech.gui.GamePanel;
 import io.nirahtech.tile.Tile;
 
 public class CollisionChecker implements Initializable {
@@ -30,11 +31,11 @@ public class CollisionChecker implements Initializable {
     public void checkTile(final Entity entity) {
 
         // Set rectangle perimeter for collision
-        final int entityLeftWorldX = entity.getMapPosition().x + entity.getSolidArea().x;
-        final int entityRightWorldX = entity.getMapPosition().x
+        final int entityLeftWorldX = entity.getPositionOnTheMap().x + entity.getSolidArea().x;
+        final int entityRightWorldX = entity.getPositionOnTheMap().x
                 + (entity.getSolidArea().x + entity.getSolidArea().width);
-        final int entityTopWorldY = entity.getMapPosition().y + entity.getSolidArea().y;
-        final int entityBottomWorldY = entity.getMapPosition().y
+        final int entityTopWorldY = entity.getPositionOnTheMap().y + entity.getSolidArea().y;
+        final int entityBottomWorldY = entity.getPositionOnTheMap().y
                 + (entity.getSolidArea().y + entity.getSolidArea().height);
 
         int entityLeftColumn = entityLeftWorldX / this.gamePanel.getTileSize();
@@ -47,7 +48,7 @@ public class CollisionChecker implements Initializable {
         switch (entity.getDirection()) {
             case UP:
                 entityTopRow = (entityTopWorldY - entity.getSpeed()) / this.gamePanel.getTileSize();
-                if (this.gamePanel.getPlayer().getMapPosition().y > 0) {
+                if (this.gamePanel.getPlayer().getPositionOnTheMap().y > 0) {
                     tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn, entityTopRow);
                     tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn, entityTopRow);
                 } else {
@@ -56,7 +57,7 @@ public class CollisionChecker implements Initializable {
                 break;
             case RIGHT:
                 entityRightColumn = (entityRightWorldX + entity.getSpeed()) / this.gamePanel.getTileSize();
-                if (this.gamePanel.getPlayer().getMapPosition().x < (this.gamePanel.getTileManager().getWorldMap()
+                if (this.gamePanel.getPlayer().getPositionOnTheMap().x < (this.gamePanel.getTileManager().getWorldMap()
                         .getOriginalWidth() * this.gamePanel.getTileSize())) {
                     tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn, entityTopRow);
                     tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn,
@@ -66,7 +67,7 @@ public class CollisionChecker implements Initializable {
                 }
                 break;
             case DOWN:
-                if (this.gamePanel.getPlayer().getMapPosition().y < (this.gamePanel.getTileManager().getWorldMap()
+                if (this.gamePanel.getPlayer().getPositionOnTheMap().y < (this.gamePanel.getTileManager().getWorldMap()
                         .getOriginalHeight() * this.gamePanel.getTileSize())) {
                     tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn, entityBottomRow);
                     tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityRightColumn,
@@ -77,7 +78,7 @@ public class CollisionChecker implements Initializable {
                 break;
             case LEFT:
                 entityLeftColumn = (entityRightWorldX - entity.getSpeed()) / this.gamePanel.getTileSize();
-                if (this.gamePanel.getPlayer().getMapPosition().x > 0) {
+                if (this.gamePanel.getPlayer().getPositionOnTheMap().x > 0) {
                     tileNum1 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn, entityTopRow);
                     tileNum2 = this.gamePanel.getTileManager().getWorldMap().getTile(entityLeftColumn,
                             entityBottomRow);

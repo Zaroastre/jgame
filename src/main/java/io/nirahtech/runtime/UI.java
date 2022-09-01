@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import io.nirahtech.gui.GamePanel;
+import io.nirahtech.runtime.apis.GameProcess;
+
 public class UI implements GameProcess {
     private final GamePanel gamePanel;
     public static Font font;
@@ -24,8 +27,8 @@ public class UI implements GameProcess {
         graphics.setFont(UI.font);
         graphics.setColor(Color.RED);
         String playerWorldMapLocationText = String.format("Player Location (WorldMap): (x: %s, y: %s",
-                this.gamePanel.getPlayer().getMapPosition().x,
-                this.gamePanel.getPlayer().getMapPosition().y);
+                this.gamePanel.getPlayer().getPositionOnTheMap().x,
+                this.gamePanel.getPlayer().getPositionOnTheMap().y);
         String playerScreenLocationText = String.format("Player Location (Screen): (x: %s, y: %s)",
                 this.gamePanel.getPlayer().getScreenX(),
                 this.gamePanel.getPlayer().getScreenY());

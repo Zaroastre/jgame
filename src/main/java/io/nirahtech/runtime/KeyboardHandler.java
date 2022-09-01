@@ -5,6 +5,8 @@ import java.awt.event.KeyListener;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import io.nirahtech.gui.GamePanel;
+
 public final class KeyboardHandler implements KeyListener, Initializable {
     private static final Logger LOGGER = Logger.getLogger(KeyboardHandler.class.getSimpleName());
     private static KeyboardHandler instance;

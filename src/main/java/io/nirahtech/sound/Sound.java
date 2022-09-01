@@ -2,6 +2,8 @@ package io.nirahtech.sound;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -9,50 +11,67 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class Sound {
-    Clip clip;
-    URL soundURL[] = new URL[1];
+import io.nirahtech.sound.apis.AudioPlayer;
 
-    public Sound() {
-        final URL url = Sound.class.getClassLoader().getResource("main-ost.wav");
-        soundURL[0] = url;
-        this.setFile();
-        
+public final class Sound implements AudioPlayer {
+    private Clip clip;
+    private URL audioFileURL = null;
+    private long resumeTime = 0;
+    private boolean isPaused = false;
+
+    public Sound(final Path audioFileURL) {
+        if (Files.exists(audioFileURL) && Files.isRegularFile(audioFileURL)) {
+            final URL url = Sound.class.getClassLoader().getResource(audioFileURL.toString());
+            this.audioFileURL = url;
+            this.loadAudioFile();
+        }
+
     }
 
-    public void setFile() {
+    private final void loadAudioFile() {
         AudioInputStream audioInputStream = null;
         try {
-            audioInputStream = AudioSystem.getAudioInputStream(this.soundURL[0]);
+            audioInputStream = AudioSystem.getAudioInputStream(this.audioFileURL);
         } catch (UnsupportedAudioFileException | IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         try {
             this.clip = AudioSystem.getClip();
         } catch (LineUnavailableException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         if (this.clip != null && audioInputStream != null) {
             try {
                 this.clip.open(audioInputStream);
             } catch (LineUnavailableException | IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
     }
 
+    @Override
     public void play() {
+        if (this.isPaused) {
+            this.clip.setMicrosecondPosition(this.resumeTime);
+            this.resumeTime = 0;
+        }
         this.clip.start();
     }
 
+    @Override
     public void loop() {
         this.clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
+    @Override
     public void stop() {
         this.clip.stop();
+    }
+
+    @Override
+    public void pause() {
+        this.isPaused = true;
+        this.resumeTime = this.clip.getMicrosecondPosition();
+        this.stop();
     }
 }

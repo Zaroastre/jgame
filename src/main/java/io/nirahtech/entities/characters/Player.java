@@ -1,9 +1,8 @@
-package io.nirahtech.entities;
+package io.nirahtech.entities.characters;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,14 +14,13 @@ import javax.imageio.ImageIO;
 
 import io.nirahtech.runtime.AnimationType;
 import io.nirahtech.runtime.Direction;
-import io.nirahtech.runtime.GamePanel;
-import io.nirahtech.runtime.GameProcess;
 import io.nirahtech.runtime.Initializable;
 import io.nirahtech.runtime.KeyboardHandler;
+import io.nirahtech.runtime.apis.GameProcess;
+import io.nirahtech.utils.SpriteHelper;
 
 public class Player extends Entity implements GameProcess, Initializable {
     private static final Logger LOGGER = Logger.getLogger(KeyboardHandler.class.getSimpleName());
-
     private static Player instance;
 
     public static final Player getInstance() {
@@ -33,16 +31,13 @@ public class Player extends Entity implements GameProcess, Initializable {
         return Player.instance;
     }
 
-    private GamePanel gamePanel;
     private KeyboardHandler keyboardHandler;
 
     private Player() {
-        super();
-
+        super(new Point(), new Point());
     }
 
-    public void setDefaultValues() {
-        this.mapLocation = new Point();
+    private void setupWithDefaultValues() {
         this.mapLocation.x = this.gamePanel.getTileSize() * 417;
         this.mapLocation.y = this.gamePanel.getTileSize() * 670;
         this.speed = this.gamePanel.getTileManager().getWorldMap().getWidth() / 1920;
@@ -51,7 +46,7 @@ public class Player extends Entity implements GameProcess, Initializable {
         this.direction = Direction.LEFT;
     }
 
-    public void getImage() {
+    private void loadTexture() {
         BufferedImage spriteSheet = null;
         try (final InputStream inputStream = Player.class.getClassLoader().getResourceAsStream("Nicolas.png")) {
             spriteSheet = ImageIO.read(inputStream);
@@ -64,7 +59,14 @@ public class Player extends Entity implements GameProcess, Initializable {
             final int height = 32;
             final int rows = 0;
             final int cols = 2;
-            this.animations.put(AnimationType.IDLE, this.loadAnimation(spriteSheet, rows, width, height, cols));
+            this.animations.put(AnimationType.IDLE,
+                    SpriteHelper.loadSpriteAnimation(spriteSheet, rows, width, height, cols));
+        }
+    }
+
+    private void dropSuperObject(final int index) {
+        if (index < this.gamePanel.objects.length) {
+            this.gamePanel.objects[index] = null;
         }
     }
 
@@ -93,25 +95,21 @@ public class Player extends Entity implements GameProcess, Initializable {
         if (indexOfSuperObjectTouched.isPresent()) {
             dropSuperObject(indexOfSuperObjectTouched.get());
         }
-        if (isKeyPressed) {
-            if (this.collisionOn == false) {
-                if (this.direction == Direction.RIGHT) {
-                    this.moveRight(this.speed);
-                } else if (this.direction == Direction.LEFT) {
-                    this.moveLeft(this.speed);
-                }
-                if (this.direction == Direction.DOWN) {
-                    this.moveDown(this.speed);
-                } else if (this.direction == Direction.UP) {
-                    this.moveUp(this.speed);
-                }
+        if (isKeyPressed && !this.collisionOn) {
+            if (this.direction == Direction.RIGHT) {
+                this.moveRight(this.speed);
+            } else if (this.direction == Direction.LEFT) {
+                this.moveLeft(this.speed);
+            }
+            if (this.direction == Direction.DOWN) {
+                this.moveDown(this.speed);
+            } else if (this.direction == Direction.UP) {
+                this.moveUp(this.speed);
             }
         }
 
         this.spriteCounter++;
-        if (this.spriteCounter > 10)
-
-        {
+        if (this.spriteCounter > 10) {
             if (this.direction != previousDirection) {
                 this.spriteIndexToDisplay = 0;
             } else {
@@ -123,12 +121,6 @@ public class Player extends Entity implements GameProcess, Initializable {
             this.spriteCounter = 0;
         }
 
-    }
-
-    private void dropSuperObject(final int index) {
-        if (index < this.gamePanel.objects.length) {
-            this.gamePanel.objects[index] = null;
-        }
     }
 
     @Override
@@ -143,12 +135,9 @@ public class Player extends Entity implements GameProcess, Initializable {
     @Override
     public void initialize(ResourceBundle configuration) {
         LOGGER.info("Initializing player instance...");
-        this.gamePanel = GamePanel.getInstance();
-        this.screenLocation = new Point();
         this.screenLocation.x = (this.gamePanel.getScreenWidth() / 2) - (this.gamePanel.getTileSize() / 2);
         this.screenLocation.y = (this.gamePanel.getScreenHeight() / 2) - (this.gamePanel.getTileSize() / 2);
 
-        this.solidArea = new Rectangle();
         this.solidArea.x = this.screenLocation.x + 4;
         this.solidArea.y = this.screenLocation.y + 8;
         this.solidArea.width = 8;
@@ -157,8 +146,8 @@ public class Player extends Entity implements GameProcess, Initializable {
         this.solideAreaDefaultY = this.solidArea.y;
 
         this.keyboardHandler = KeyboardHandler.getInstance();
-        this.setDefaultValues();
-        this.getImage();
+        this.setupWithDefaultValues();
+        this.loadTexture();
         LOGGER.info("Player instance initialized.");
     }
 

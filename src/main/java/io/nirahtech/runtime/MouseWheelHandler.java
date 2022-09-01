@@ -5,6 +5,8 @@ import java.awt.event.MouseWheelListener;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+import io.nirahtech.gui.GamePanel;
+
 public class MouseWheelHandler implements MouseWheelListener, Initializable {
 
     private static final Logger LOGGER = Logger.getLogger(MouseWheelHandler.class.getSimpleName());

@@ -1,5 +1,8 @@
 package io.nirahtech.runtime;
 
+/**
+ * 
+ */
 public interface Zoomable {
     void zoomOut();
 

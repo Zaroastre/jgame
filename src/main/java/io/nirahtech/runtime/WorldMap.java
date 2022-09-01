@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+import io.nirahtech.gui.GamePanel;
 import io.nirahtech.tile.EarthTile;
 import io.nirahtech.tile.ForestTile;
 import io.nirahtech.tile.GrassTile;
