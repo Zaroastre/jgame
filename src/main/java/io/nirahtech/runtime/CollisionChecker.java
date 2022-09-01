@@ -90,7 +90,7 @@ public class CollisionChecker implements Initializable {
                 break;
         }
         if (tileNum1 != null && tileNum2 != null) {
-            entity.setCollision(tileNum1.isCollision || tileNum2.isCollision);
+            entity.setCollision(tileNum1.isCollision() || tileNum2.isCollision());
         }
     }
 

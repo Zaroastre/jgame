@@ -1,12 +1,15 @@
 package io.nirahtech.tile;
 
 import java.awt.image.BufferedImage;
+import java.awt.Point;
 
-public class Tile {
+import io.nirahtech.entities.Entity;
+
+public class Tile extends Entity {
     private final BufferedImage image;
-    public boolean isCollision = false;
 
     protected Tile(final BufferedImage image) {
+        super(new Point(), new Point());
         this.image = image;
     }
 
@@ -16,6 +19,6 @@ public class Tile {
 
     @Override
     public String toString() {
-        return String.format("%s: %s", this.hashCode(), this.isCollision);
+        return String.format("%s: %s", this.hashCode(), super.isCollision());
     }
 }

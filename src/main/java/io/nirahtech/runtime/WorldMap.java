@@ -99,14 +99,14 @@ public class WorldMap {
                 if (isWater(red, green, blue)) {
                     tile = new WaterTile(WorldMap.waterImage.getSubimage(0, 0, this.originalTileSizeWidth,
                             this.originalTileSizeHeight));
-                    tile.isCollision = true;
+                    tile.setCollision(true);
                 } else if (isGrass(red, green, blue)) {
                     tile = new GrassTile(WorldMap.grassImage.getSubimage(0, 0, this.originalTileSizeWidth,
                             this.originalTileSizeHeight));
                 } else if (isForest(red, green, blue)) {
                     tile = new ForestTile(WorldMap.forestImage.getSubimage(0, 0, this.originalTileSizeWidth,
                             this.originalTileSizeHeight));
-                    tile.isCollision = true;
+                    tile.setCollision(true);
                 } else if (isSand(red, green, blue)) {
                     tile = new SandTile(WorldMap.sandImage.getSubimage(0, 0, this.originalTileSizeWidth,
                             this.originalTileSizeHeight));
