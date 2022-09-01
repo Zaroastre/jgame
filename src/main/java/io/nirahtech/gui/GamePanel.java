@@ -160,6 +160,9 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
                 }
                 this.player.paintComponent(graphics2D);
                 this.ui.paintComponent(graphics2D);
+                if (!this.sound.isPlaying() && this.sound.isPaused()) {
+                    this.sound.play();
+                }
                 break;
             case PAUSED:
                 String pauseText = "PAUSE";
@@ -176,6 +179,9 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
                 graphics2D.setColor(Color.WHITE);
                 int length = (int) graphics2D.getFontMetrics().getStringBounds(pauseText, graphics2D).getWidth();
                 graphics2D.drawString(pauseText, (this.screenWidth / 2) - (length / 2), (this.screenHeight / 2));
+                if (this.sound.isPlaying() && !this.sound.isPaused()) {
+                    this.sound.pause();
+                }
                 break;
             default:
                 break;

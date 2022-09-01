@@ -16,6 +16,7 @@ public final class Sound implements AudioPlayer {
     private URL audioFileURL = null;
     private long resumeTime = 0;
     private boolean isPaused = false;
+    private boolean isPlaying = false;
 
     public Sound(final String audioFileURL) {
         final URL url = Sound.class.getClassLoader().getResource(audioFileURL.toString());
@@ -51,6 +52,8 @@ public final class Sound implements AudioPlayer {
             this.resumeTime = 0;
         }
         this.clip.start();
+        this.isPaused = false;
+        this.isPlaying = true;
     }
 
     @Override
@@ -61,6 +64,7 @@ public final class Sound implements AudioPlayer {
     @Override
     public void stop() {
         this.clip.stop();
+        this.isPlaying = false;
     }
 
     @Override
@@ -68,5 +72,13 @@ public final class Sound implements AudioPlayer {
         this.isPaused = true;
         this.resumeTime = this.clip.getMicrosecondPosition();
         this.stop();
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
     }
 }
