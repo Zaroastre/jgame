@@ -20,6 +20,8 @@ import javax.swing.JPanel;
 import io.nirahtech.entities.artifacts.SuperObject;
 import io.nirahtech.entities.characters.Player;
 import io.nirahtech.enumerations.GameStep;
+import io.nirahtech.menus.MainMenu;
+import io.nirahtech.menus.Menu;
 import io.nirahtech.runtime.CollisionChecker;
 import io.nirahtech.runtime.Initializable;
 import io.nirahtech.runtime.UI;
@@ -72,9 +74,10 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     private MouseWheelHandler mouseHandler;
     private TileManager tileManager;
     private CollisionChecker collisionChecker;
-    private GameStep gameStep = GameStep.IN_GAME;
+    private GameStep gameStep = GameStep.MAIN_MENU;
     private BufferedImage tempScreen;
     private Graphics2D canvas;
+    private Menu mainMenu;
 
     @Override
     public void zoom(int ratio) {
@@ -160,6 +163,7 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     public void update() {
         switch (this.gameStep) {
             case MAIN_MENU:
+                this.mainMenu.update();
                 break;
             case IN_GAME:
                 this.player.update();
@@ -182,6 +186,7 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
     public void createBufferedImageToDraw() {
         switch (this.gameStep) {
             case MAIN_MENU:
+                this.mainMenu.paintComponent(this.canvas);
                 break;
             case IN_GAME:
                 tileManager.paintComponent(this.canvas);
@@ -192,7 +197,6 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
                 }
                 this.player.paintComponent(this.canvas);
                 this.ui.paintComponent(this.canvas);
-
                 break;
             case PAUSED:
                 String pauseText = "PAUSE";
@@ -220,6 +224,7 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
 
     }
 
+    @Deprecated
     @Override
     public void paintComponent(final Graphics graphics) {
         final Graphics2D graphics2D = (Graphics2D) graphics;
@@ -335,12 +340,14 @@ public final class GamePanel extends JPanel implements Runnable, GameProcess, Zo
         this.tileManager = TileManager.getInstance();
         this.collisionChecker = CollisionChecker.getInstance();
         this.player = Player.getInstance();
+        this.mainMenu = MainMenu.getInstance();
 
         this.tileManager.initialize(configuration);
         this.player.initialize(configuration);
         this.collisionChecker.initialize(configuration);
         this.mouseHandler.initialize(configuration);
         this.keyboardHandler.initialize(configuration);
+        this.mainMenu.initialize(configuration);
         LOGGER.info("Game panel instance initialized.");
 
     }

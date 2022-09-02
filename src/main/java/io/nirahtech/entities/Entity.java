@@ -16,6 +16,7 @@ public abstract class Entity implements Collisionable<Entity>, GeoLocalizable {
     protected final Point positionOnTheScreen;
     protected final Point solidAreaDefaultLocation;
     protected final Rectangle solidArea;
+    protected int animationSpeed = 2;
 
     protected Entity(Point mapLocation, Point screenLocation) {
         this.positionOnTheWorldMap = mapLocation;

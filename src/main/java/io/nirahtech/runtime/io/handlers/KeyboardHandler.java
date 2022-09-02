@@ -26,7 +26,7 @@ public final class KeyboardHandler implements KeyListener, Initializable {
 
     }
 
-    private boolean upPressed, downPressed, leftPressed, rightPressed = false;
+    private boolean upPressed, downPressed, leftPressed, rightPressed, enterPressed, shiftPressed = false;
 
     public boolean isUpPressed() {
         return upPressed;
@@ -44,6 +44,14 @@ public final class KeyboardHandler implements KeyListener, Initializable {
         return rightPressed;
     }
 
+    public boolean isEnterPressed() {
+        return this.enterPressed;
+    }
+
+    public boolean isShiftPressed() {
+        return shiftPressed;
+    }
+
     @Override
     public void keyTyped(KeyEvent event) {
 
@@ -53,59 +61,101 @@ public final class KeyboardHandler implements KeyListener, Initializable {
 
     @Override
     public void keyPressed(KeyEvent event) {
-        switch (event.getKeyCode()) {
-            case KeyEvent.VK_Z:
-            case KeyEvent.VK_UP:
-                this.upPressed = true;
-                break;
-            case KeyEvent.VK_S:
-            case KeyEvent.VK_DOWN:
-                this.downPressed = true;
-                break;
-            case KeyEvent.VK_Q:
-            case KeyEvent.VK_LEFT:
-                this.leftPressed = true;
-                break;
-            case KeyEvent.VK_D:
-            case KeyEvent.VK_RIGHT:
-                this.rightPressed = true;
-                break;
-            case KeyEvent.VK_P:
-                if (this.gamePanel.getGameStep() == GameStep.IN_GAME) {
-                    this.gamePanel.setGameStep(GameStep.PAUSED);
-                } else if (this.gamePanel.getGameStep() == GameStep.PAUSED) {
-                    this.gamePanel.setGameStep(GameStep.IN_GAME);
-                }
-                break;
-            case KeyEvent.VK_M:
-                this.gamePanel.getSound().stop();
-                break;
-            default:
-                break;
+        if (this.gamePanel.getGameStep() == GameStep.MAIN_MENU) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.VK_Z:
+                case KeyEvent.VK_UP:
+                    this.upPressed = true;
+                    break;
+                case KeyEvent.VK_S:
+                case KeyEvent.VK_DOWN:
+                    this.downPressed = true;
+                    break;
+                case KeyEvent.VK_ENTER:
+                    this.enterPressed = true;
+                    break;
+
+            }
+        } else if (this.gamePanel.getGameStep() == GameStep.IN_GAME) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.VK_Z:
+                case KeyEvent.VK_UP:
+                    this.upPressed = true;
+                    break;
+                case KeyEvent.VK_S:
+                case KeyEvent.VK_DOWN:
+                    this.downPressed = true;
+                    break;
+                case KeyEvent.VK_Q:
+                case KeyEvent.VK_LEFT:
+                    this.leftPressed = true;
+                    break;
+                case KeyEvent.VK_D:
+                case KeyEvent.VK_RIGHT:
+                    this.rightPressed = true;
+                    break;
+                case KeyEvent.VK_SHIFT:
+                    this.shiftPressed = true;
+                    break;
+                case KeyEvent.VK_P:
+                    if (this.gamePanel.getGameStep() == GameStep.IN_GAME) {
+                        this.gamePanel.setGameStep(GameStep.PAUSED);
+                    } else if (this.gamePanel.getGameStep() == GameStep.PAUSED) {
+                        this.gamePanel.setGameStep(GameStep.IN_GAME);
+                    }
+                    break;
+                case KeyEvent.VK_M:
+                    this.gamePanel.getSound().stop();
+                    break;
+                default:
+                    break;
+            }
+
         }
     }
 
     @Override
     public void keyReleased(KeyEvent event) {
-        switch (event.getKeyCode()) {
-            case KeyEvent.VK_Z:
-            case KeyEvent.VK_UP:
-                this.upPressed = false;
-                break;
-            case KeyEvent.VK_S:
-            case KeyEvent.VK_DOWN:
-                this.downPressed = false;
-                break;
-            case KeyEvent.VK_Q:
-            case KeyEvent.VK_LEFT:
-                this.leftPressed = false;
-                break;
-            case KeyEvent.VK_D:
-            case KeyEvent.VK_RIGHT:
-                this.rightPressed = false;
-                break;
-            default:
-                break;
+        if (this.gamePanel.getGameStep() == GameStep.MAIN_MENU) {
+
+            switch (event.getKeyCode()) {
+                case KeyEvent.VK_Z:
+                case KeyEvent.VK_UP:
+                    this.upPressed = false;
+                    break;
+                case KeyEvent.VK_S:
+                case KeyEvent.VK_DOWN:
+                    this.downPressed = false;
+                    break;
+                case KeyEvent.VK_ENTER:
+                    this.enterPressed = false;
+                    break;
+
+            }
+        } else if (this.gamePanel.getGameStep() == GameStep.IN_GAME) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.VK_Z:
+                case KeyEvent.VK_UP:
+                    this.upPressed = false;
+                    break;
+                case KeyEvent.VK_S:
+                case KeyEvent.VK_DOWN:
+                    this.downPressed = false;
+                    break;
+                case KeyEvent.VK_Q:
+                case KeyEvent.VK_LEFT:
+                    this.leftPressed = false;
+                    break;
+                case KeyEvent.VK_D:
+                case KeyEvent.VK_RIGHT:
+                    this.rightPressed = false;
+                    break;
+                case KeyEvent.VK_SHIFT:
+                    this.shiftPressed = false;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
