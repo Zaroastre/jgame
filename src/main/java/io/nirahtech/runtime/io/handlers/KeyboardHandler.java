@@ -13,6 +13,7 @@ public final class KeyboardHandler implements KeyListener, Initializable {
     private static final Logger LOGGER = Logger.getLogger(KeyboardHandler.class.getSimpleName());
     private static KeyboardHandler instance;
     private GamePanel gamePanel = null;
+    private boolean isLocked = false;
 
     public static final KeyboardHandler getInstance() {
         LOGGER.info("Calling unique instance of keyboard handler");
@@ -59,22 +60,31 @@ public final class KeyboardHandler implements KeyListener, Initializable {
 
     }
 
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
     @Override
     public void keyPressed(KeyEvent event) {
         if (this.gamePanel.getGameStep() == GameStep.MAIN_MENU) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.VK_Z:
-                case KeyEvent.VK_UP:
-                    this.upPressed = true;
-                    break;
-                case KeyEvent.VK_S:
-                case KeyEvent.VK_DOWN:
-                    this.downPressed = true;
-                    break;
-                case KeyEvent.VK_ENTER:
-                    this.enterPressed = true;
-                    break;
-
+            if (!this.isLocked) {
+                switch (event.getKeyCode()) {
+                    case KeyEvent.VK_Z:
+                    case KeyEvent.VK_UP:
+                        this.upPressed = true;
+                        this.isLocked = true;
+                        break;
+                    case KeyEvent.VK_S:
+                    case KeyEvent.VK_DOWN:
+                        this.downPressed = true;
+                        this.isLocked = true;
+                        break;
+                    case KeyEvent.VK_ENTER:
+                        this.enterPressed = true;
+                        this.isLocked = true;
+                        break;
+                }
             }
         } else if (this.gamePanel.getGameStep() == GameStep.IN_GAME) {
             switch (event.getKeyCode()) {
@@ -117,6 +127,7 @@ public final class KeyboardHandler implements KeyListener, Initializable {
     @Override
     public void keyReleased(KeyEvent event) {
         if (this.gamePanel.getGameStep() == GameStep.MAIN_MENU) {
+            this.isLocked = false;
 
             switch (event.getKeyCode()) {
                 case KeyEvent.VK_Z:
@@ -126,9 +137,11 @@ public final class KeyboardHandler implements KeyListener, Initializable {
                 case KeyEvent.VK_S:
                 case KeyEvent.VK_DOWN:
                     this.downPressed = false;
+                    this.isLocked = false;
                     break;
                 case KeyEvent.VK_ENTER:
                     this.enterPressed = false;
+                    this.isLocked = false;
                     break;
 
             }

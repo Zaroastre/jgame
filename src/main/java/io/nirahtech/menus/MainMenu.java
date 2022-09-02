@@ -18,32 +18,43 @@ public class MainMenu extends Menu {
 
     private MainMenuItem selectedMenuItem = MainMenuItem.NEW_GAME;
     private int userMenuChoice = selectedMenuItem.ordinal();
+    private boolean isAllreadyProcessed = false;
 
     @Override
     public void update() {
-        if (Menu.keyboardHandler.isDownPressed() && !Menu.keyboardHandler.isEnterPressed()) {
-            if (MainMenuItem.getMainMenuItemByOrdinal(userMenuChoice + 1) != null) {
-                userMenuChoice++;
-                selectedMenuItem = MainMenuItem.getMainMenuItemByOrdinal(userMenuChoice);
+        if (!this.isAllreadyProcessed) {
+            if (Menu.keyboardHandler.isDownPressed() && !Menu.keyboardHandler.isEnterPressed()) {
+                if (MainMenuItem.getMainMenuItemByOrdinal(userMenuChoice + 1) != null) {
+                    userMenuChoice++;
+                    selectedMenuItem = MainMenuItem.getMainMenuItemByOrdinal(userMenuChoice);
+                    this.isAllreadyProcessed = true;
+                }
+            } else if (Menu.keyboardHandler.isUpPressed() && !Menu.keyboardHandler.isEnterPressed()) {
+                if (MainMenuItem.getMainMenuItemByOrdinal(userMenuChoice - 1) != null) {
+                    userMenuChoice--;
+                    selectedMenuItem = MainMenuItem.getMainMenuItemByOrdinal(userMenuChoice);
+                    this.isAllreadyProcessed = true;
+                }
+            } else if (Menu.keyboardHandler.isEnterPressed()) {
+                switch (selectedMenuItem) {
+                    case NEW_GAME:
+                    case CONTINUE:
+                        Menu.gamePanel.setGameStep(GameStep.IN_GAME);
+                        this.isAllreadyProcessed = true;
+                        break;
+                    case QUIT:
+                        Menu.gamePanel.setGameStep(GameStep.GAME_OVER);
+                        this.isAllreadyProcessed = true;
+                        System.exit(0);
+                        break;
+                    default:
+                        break;
+                }
             }
-        } else if (Menu.keyboardHandler.isUpPressed() && !Menu.keyboardHandler.isEnterPressed()) {
-            if (MainMenuItem.getMainMenuItemByOrdinal(userMenuChoice - 1) != null) {
-                userMenuChoice--;
-                selectedMenuItem = MainMenuItem.getMainMenuItemByOrdinal(userMenuChoice);
-            }
-        } else if (Menu.keyboardHandler.isEnterPressed()) {
-            switch (selectedMenuItem) {
-                case NEW_GAME:
-                case CONTINUE:
-                    Menu.gamePanel.setGameStep(GameStep.IN_GAME);
-                    break;
-                case QUIT:
-                    Menu.gamePanel.setGameStep(GameStep.GAME_OVER);
-                    System.exit(0);
-                    break;
-                default:
-                    break;
-            }
+             else if (Menu.keyboardHandler.isLocked() == false) {
+                System.out.println("ok");
+                this.isAllreadyProcessed = false;
+             }
         }
     }
 

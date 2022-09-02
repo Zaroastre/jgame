@@ -41,7 +41,6 @@ public abstract class Entity implements Collisionable<Entity>, GeoLocalizable {
 
     @Override
     public boolean isInCollisionWith(Entity otherEntity) {
-        // TODO Auto-generated method stub
         return false;
     }
 

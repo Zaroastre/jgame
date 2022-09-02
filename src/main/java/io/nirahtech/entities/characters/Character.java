@@ -39,11 +39,19 @@ public abstract class Character extends Entity implements Moveable {
         return moveSpeed;
     }
 
+    private final void updateAnimation(final AnimationType animation) {
+        if (this.currentAnimation != animation) {
+            this.currentAnimation = animation;
+            this.spriteIndexToDisplay = 0;
+        }
+    }
+
     @Override
     public void moveDown(final int distance) {
-        if (this.currentAnimation != AnimationType.FRONT_WALK_BOTTOM) {
-            this.currentAnimation = AnimationType.FRONT_WALK_BOTTOM;
-            this.spriteIndexToDisplay = 0;
+        if (this.isRunning) {
+            this.updateAnimation(AnimationType.FRONT_RUN_BOTTOM);
+        } else {
+            this.updateAnimation(AnimationType.FRONT_WALK_BOTTOM);
         }
         super.getPositionOnTheWorldMap().y += distance;
     }
@@ -51,15 +59,9 @@ public abstract class Character extends Entity implements Moveable {
     @Override
     public void moveLeft(final int distance) {
         if (this.isRunning) {
-            if (this.currentAnimation != AnimationType.FRONT_RUN_LEFT) {
-                this.currentAnimation = AnimationType.FRONT_RUN_LEFT;
-                this.spriteIndexToDisplay = 0;
-            }
+            this.updateAnimation(AnimationType.FRONT_RUN_LEFT);
         } else {
-            if (this.currentAnimation != AnimationType.FRONT_WALK_LEFT) {
-                this.currentAnimation = AnimationType.FRONT_WALK_LEFT;
-                this.spriteIndexToDisplay = 0;
-            }
+            this.updateAnimation(AnimationType.FRONT_WALK_LEFT);
         }
         super.getPositionOnTheWorldMap().x -= distance;
     }
@@ -67,24 +69,19 @@ public abstract class Character extends Entity implements Moveable {
     @Override
     public void moveRight(final int distance) {
         if (this.isRunning) {
-            if (this.currentAnimation != AnimationType.FRONT_RUN_RIGHT) {
-                this.currentAnimation = AnimationType.FRONT_RUN_RIGHT;
-                this.spriteIndexToDisplay = 0;
-            }
+            this.updateAnimation(AnimationType.FRONT_RUN_RIGHT);
         } else {
-            if (this.currentAnimation != AnimationType.FRONT_WALK_RIGHT) {
-                this.currentAnimation = AnimationType.FRONT_WALK_RIGHT;
-                this.spriteIndexToDisplay = 0;
-            }
+            this.updateAnimation(AnimationType.FRONT_WALK_RIGHT);
         }
         super.getPositionOnTheWorldMap().x += distance;
     }
 
     @Override
     public void moveUp(final int distance) {
-        if (this.currentAnimation != AnimationType.FRONT_WALK_TOP) {
-            this.currentAnimation = AnimationType.FRONT_WALK_TOP;
-            this.spriteIndexToDisplay = 0;
+        if (this.isRunning) {
+            this.updateAnimation(AnimationType.FRONT_RUN_TOP);
+        } else {
+            this.updateAnimation(AnimationType.FRONT_WALK_TOP);
         }
         super.getPositionOnTheWorldMap().y -= distance;
     }
