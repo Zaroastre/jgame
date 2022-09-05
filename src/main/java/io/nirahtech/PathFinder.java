@@ -152,7 +152,6 @@ public class PathFinder extends JPanel {
                 this.goalReached = true;
                 this.trackThePath();
             }
-
         }
     }
 
