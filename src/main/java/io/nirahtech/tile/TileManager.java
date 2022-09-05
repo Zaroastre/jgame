@@ -66,16 +66,16 @@ public final class TileManager implements GameProcess, Initializable {
                     screenY = worldIndexY;
                 }
                 int rightOffset = this.gamePanel.getScreenWidth() - player.getPositionOnTheScreen().x;
-                if (rightOffset > getInstance().getWorldMap().getWidth()
+                if (rightOffset > this.map.getWidth()
                         - player.getPositionOnTheWorldMap().x) {
                     screenX = this.gamePanel.getScreenWidth()
-                            - (getInstance().getWorldMap().getWidth() - worldIndexX);
+                            - (this.map.getWidth() - worldIndexX);
                 }
                 int bottomOffset = this.gamePanel.getScreenHeight() - player.getPositionOnTheScreen().y;
-                if (bottomOffset > getInstance().getWorldMap().getHeight()
+                if (bottomOffset > this.map.getHeight()
                         - player.getPositionOnTheWorldMap().y) {
                     screenY = this.gamePanel.getScreenHeight()
-                            - (getInstance().getWorldMap().getHeight() - worldIndexY);
+                            - (this.map.getHeight() - worldIndexY);
                 }
 
                 if (worldIndexX + this.gamePanel.getTileSize() > player.getPositionOnTheWorldMap().x

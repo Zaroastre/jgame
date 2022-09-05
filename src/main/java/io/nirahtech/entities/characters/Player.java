@@ -19,6 +19,7 @@ import io.nirahtech.runtime.Initializable;
 import io.nirahtech.runtime.apis.GameProcess;
 import io.nirahtech.runtime.io.handlers.KeyboardHandler;
 import io.nirahtech.utils.SpriteHelper;
+import io.nirahtech.utils.SpriteSheetOrientation;
 
 public final class Player extends Character implements GameProcess, Initializable {
     private static final Logger LOGGER = Logger.getLogger(KeyboardHandler.class.getSimpleName());
@@ -41,27 +42,36 @@ public final class Player extends Character implements GameProcess, Initializabl
     private void setupWithDefaultValues() {
         super.getPositionOnTheWorldMap().x = this.gamePanel.getTileSize() * 417;
         super.getPositionOnTheWorldMap().y = this.gamePanel.getTileSize() * 670;
-        this.speed = this.gamePanel.getTileManager().getWorldMap().getWidth() / 1920;
+        this.moveSpeed = 5;
         this.tileSizeWidth = this.gamePanel.getTileSize();
         this.tileSizeHeight = this.gamePanel.getTileSize();
         this.direction = Direction.LEFT;
     }
 
     private void loadTexture() {
-        BufferedImage spriteSheet = null;
-        try (final InputStream inputStream = Player.class.getClassLoader().getResourceAsStream("Nicolas.png")) {
-            spriteSheet = ImageIO.read(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        for (AnimationType animationType : AnimationType.values()) {
+            BufferedImage spriteSheet = null;
+            try (final InputStream inputStream = Player.class.getClassLoader()
+                    .getResourceAsStream("MAN_" + animationType.name() + ".png")) {
+                spriteSheet = ImageIO.read(inputStream);
+            } catch (Exception e) {
+                System.console().writer().println("Unable to load " + animationType);
+            }
 
-        if (spriteSheet != null) {
-            final int width = 32;
-            final int height = 32;
-            final int rows = 0;
-            final int cols = 2;
-            this.animations.put(AnimationType.IDLE,
-                    SpriteHelper.loadSpriteAnimation(spriteSheet, rows, width, height, cols));
+            if (spriteSheet != null) {
+                final int width = (spriteSheet.getWidth() <= spriteSheet.getHeight()) ? spriteSheet.getWidth()
+                        : spriteSheet.getHeight();
+                final int height = width;
+                final int x = 0;
+                final int y = 0;
+                final int totalSprites = (spriteSheet.getWidth() > spriteSheet.getHeight())
+                        ? spriteSheet.getWidth() / width
+                        : spriteSheet.getHeight() / width;
+                this.animations.put(animationType,
+                        SpriteHelper.loadSpriteAnimation(spriteSheet, x, y, width, height, totalSprites,
+                                SpriteSheetOrientation.VERTICAL));
+            }
+
         }
     }
 
@@ -89,35 +99,69 @@ public final class Player extends Character implements GameProcess, Initializabl
             this.direction = Direction.RIGHT;
             isKeyPressed = true;
         }
+        if (this.keyboardHandler.isShiftPressed()) {
+            if (!this.isRunning) {
+                this.isRunning = true;
+            }
+        } else {
+            if (this.isRunning) {
+                this.isRunning = false;
+            }
+        }
+
+        if (this.isRunning) {
+            this.moveSpeed = 10;
+        } else {
+            this.moveSpeed = 5;
+        }
 
         super.setCollision(false);
-        Entity.GAME_PANEL.getCollisionChecker().checkTile(this);
+        // Entity.GAME_PANEL.getCollisionChecker().checkTile(this);
         Optional<Integer> indexOfSuperObjectTouched = this.gamePanel.getCollisionChecker().checkSuperObject(this);
         if (indexOfSuperObjectTouched.isPresent()) {
             dropSuperObject(indexOfSuperObjectTouched.get());
         }
         if (isKeyPressed && !super.isCollision()) {
             if (this.direction == Direction.RIGHT) {
-                this.moveRight(this.speed);
+                this.moveRight(this.moveSpeed);
             } else if (this.direction == Direction.LEFT) {
-                this.moveLeft(this.speed);
+                this.moveLeft(this.moveSpeed);
             }
             if (this.direction == Direction.DOWN) {
-                this.moveDown(this.speed);
+                this.moveDown(this.moveSpeed);
             } else if (this.direction == Direction.UP) {
-                this.moveUp(this.speed);
+                this.moveUp(this.moveSpeed);
+            }
+        }
+
+        if (!isKeyPressed) {
+            if (this.direction == Direction.RIGHT) {
+                if (this.currentAnimation != AnimationType.IDLE_RIGHT) {
+                    this.currentAnimation = AnimationType.IDLE_RIGHT;
+                    this.spriteIndexToDisplay = 0;
+                }
+            } else if (this.direction == Direction.LEFT) {
+                if (this.currentAnimation != AnimationType.IDLE_LEFT) {
+                    this.currentAnimation = AnimationType.IDLE_LEFT;
+                    this.spriteIndexToDisplay = 0;
+                }
+            }
+            if (this.direction == Direction.DOWN) {
+                // this.moveDown(this.moveSpeed);
+            } else if (this.direction == Direction.UP) {
+                // this.moveUp(this.moveSpeed);
             }
         }
 
         this.spriteCounter++;
-        if (this.spriteCounter > 10) {
+        if (this.spriteCounter > this.animationSpeed) {
             if (this.direction != previousDirection) {
-                this.spriteIndexToDisplay = 0;
+                super.spriteIndexToDisplay = 0;
             } else {
-                this.spriteIndexToDisplay++;
+                super.spriteIndexToDisplay++;
             }
-            if (this.spriteIndexToDisplay >= this.animations.get(this.currentAnimation).length) {
-                this.spriteIndexToDisplay = 0;
+            if (super.spriteIndexToDisplay >= this.animations.get(this.currentAnimation).length) {
+                super.spriteIndexToDisplay = 0;
             }
             this.spriteCounter = 0;
         }
@@ -126,7 +170,7 @@ public final class Player extends Character implements GameProcess, Initializabl
 
     @Override
     public void paintComponent(Graphics graphics2D) {
-        final BufferedImage image = this.animations.get(this.currentAnimation)[this.spriteIndexToDisplay];
+        final BufferedImage image = this.animations.get(this.currentAnimation)[super.spriteIndexToDisplay];
         graphics2D.drawImage(image, this.getPositionOnTheScreen().x, this.getPositionOnTheScreen().y,
                 this.tileSizeWidth,
                 this.tileSizeHeight, null);

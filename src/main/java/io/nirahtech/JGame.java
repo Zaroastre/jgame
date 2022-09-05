@@ -52,14 +52,14 @@ public class JGame {
         window.setTitle(resourceBundle.getString("title"));
 
         LOGGER.info("Creating game panel...");
-        final GamePanel gamePanel = GamePanel.getInstance();
+        final GamePanel gamePanel = GamePanel.getInstance(window);
 
+        LOGGER.info("Initializing game panel...");
+        gamePanel.initialize(resourceBundle);
         LOGGER.info("Attaching event handler for keyboard...");
         window.addKeyListener(KeyboardHandler.getInstance());
         LOGGER.info("Attaching event handler for mouse wheel...");
         window.addMouseWheelListener(MouseWheelHandler.getInstance());
-        LOGGER.info("Initializing game panel...");
-        gamePanel.initialize(resourceBundle);
         LOGGER.info("Adding game panel to window...");
         window.add(gamePanel);
         window.pack();
